@@ -1,48 +1,48 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Tic Tac Toe Browser Game - Ein klassisches Tic Tac Toe Spiel">
+    <meta name="description" content="Tic Tac Toe Browser Game - A classic Tic Tac Toe game">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header-controls">
-            <button id="sound-toggle" class="sound-toggle" aria-label="Sound ein/aus">🔊</button>
-            <button id="theme-toggle" class="theme-toggle" aria-label="Theme wechseln">🌙</button>
-            <button id="help-btn" class="help-btn" aria-label="Hilfe">?</button>
+            <button id="sound-toggle" class="sound-toggle" aria-label="Toggle sound">🔊</button>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            <button id="help-btn" class="help-btn" aria-label="Help">?</button>
         </div>
         <h1>Tic Tac Toe</h1>
         <div class="volume-control" id="volume-control">
-            <label for="volume-slider">Lautstärke:</label>
-            <input type="range" id="volume-slider" min="0" max="100" value="50" aria-label="Lautstärke">
+            <label for="volume-slider">Volume:</label>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" aria-label="Volume">
             <span id="volume-value">50%</span>
         </div>
         <div class="game-info">
             <div class="current-player">
-                <span>Aktueller Spieler: </span>
-                <span id="player-indicator">X (Du)</span>
+                <span>Current Player: </span>
+                <span id="player-indicator">X (You)</span>
             </div>
             <div class="difficulty-selector">
-                <label for="difficulty-select">KI-Schwierigkeit: </label>
-                <select id="difficulty-select" aria-label="KI-Schwierigkeitsgrad auswählen">
-                    <option value="easy">Leicht</option>
-                    <option value="medium">Mittel</option>
-                    <option value="hard" selected>Schwer (Unbesiegbar)</option>
+                <label for="difficulty-select">AI Difficulty: </label>
+                <select id="difficulty-select" aria-label="Select AI difficulty level">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard" selected>Hard (Unbeatable)</option>
                 </select>
             </div>
             <div class="move-info">
-                <span id="move-counter">Züge: 0</span>
+                <span id="move-counter">Moves: 0</span>
             </div>
             <div class="score">
                 <div>X: <span id="score-x">0</span></div>
                 <div>O: <span id="score-o">0</span></div>
-                <div>Unentschieden: <span id="score-draw">0</span></div>
+                <div>Draw: <span id="score-draw">0</span></div>
             </div>
         </div>
-        <div class="game-board" id="game-board" role="grid" aria-label="Tic Tac Toe Spielfeld">
+        <div class="game-board" id="game-board" role="grid" aria-label="Tic Tac Toe game board">
             <div class="cell" data-index="0"></div>
             <div class="cell" data-index="1"></div>
             <div class="cell" data-index="2"></div>
@@ -54,17 +54,17 @@
             <div class="cell" data-index="8"></div>
         </div>
         <div class="controls">
-            <button id="undo-btn" disabled>Rückgängig</button>
-            <button id="reset-btn">Neues Spiel</button>
-            <button id="reset-score-btn">Punkte zurücksetzen</button>
-            <button id="history-btn">Spielhistorie</button>
-            <button id="achievements-btn">🏆 Erfolge</button>
+            <button id="undo-btn" disabled>Undo</button>
+            <button id="reset-btn">New Game</button>
+            <button id="reset-score-btn">Reset Score</button>
+            <button id="history-btn">Game History</button>
+            <button id="achievements-btn">🏆 Achievements</button>
         </div>
         <div class="replay-controls" id="replay-controls" style="display: none;">
-            <button id="replay-prev" disabled>⏮ Vorheriger Zug</button>
-            <button id="replay-play-pause">▶ Abspielen</button>
-            <button id="replay-next">Nächster Zug ⏭</button>
-            <button id="replay-close">Schließen</button>
+            <button id="replay-prev" disabled>⏮ Previous Move</button>
+            <button id="replay-play-pause">▶ Play</button>
+            <button id="replay-next">Next Move ⏭</button>
+            <button id="replay-close">Close</button>
         </div>
         <div class="message" id="message" role="status" aria-live="polite" aria-atomic="true"></div>
     </div>
@@ -73,24 +73,24 @@
     <div id="help-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Spielregeln</h2>
+            <h2>Game Rules</h2>
             <div class="help-content">
-                <p><strong>Tic Tac Toe</strong> ist ein klassisches Strategiespiel für zwei Spieler.</p>
-                <h3>Ziel:</h3>
-                <p>Als erster drei eigene Symbole in einer Reihe (horizontal, vertikal oder diagonal) platzieren.</p>
-                <h3>Spielablauf:</h3>
+                <p><strong>Tic Tac Toe</strong> is a classic strategy game for two players.</p>
+                <h3>Objective:</h3>
+                <p>Be the first to place three of your symbols in a row (horizontal, vertical, or diagonal).</p>
+                <h3>Gameplay:</h3>
                 <ul>
-                    <li>Du spielst als X gegen den Computer (O)</li>
-                    <li>Du beginnst und machst den ersten Zug</li>
-                    <li>Nach deinem Zug macht der Computer automatisch seinen Zug</li>
-                    <li>Gewinner ist, wer zuerst drei in einer Reihe hat</li>
-                    <li>Bei einem vollen Spielfeld ohne Gewinner: Unentschieden</li>
+                    <li>You play as X against the computer (O)</li>
+                    <li>You start and make the first move</li>
+                    <li>After your move, the computer automatically makes its move</li>
+                    <li>The winner is whoever gets three in a row first</li>
+                    <li>If the board is full without a winner: Draw</li>
                 </ul>
-                <h3>Tastenkürzel:</h3>
+                <h3>Keyboard Shortcuts:</h3>
                 <ul>
-                    <li><kbd>1-9</kbd>: Schnellzugriff auf Zellen</li>
-                    <li><kbd>Ctrl+Z</kbd> / <kbd>Cmd+Z</kbd>: Zug rückgängig</li>
-                    <li><kbd>R</kbd>: Neues Spiel</li>
+                    <li><kbd>1-9</kbd>: Quick access to cells</li>
+                    <li><kbd>Ctrl+Z</kbd> / <kbd>Cmd+Z</kbd>: Undo move</li>
+                    <li><kbd>R</kbd>: New game</li>
                 </ul>
             </div>
         </div>

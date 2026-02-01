@@ -298,7 +298,7 @@ class TicTacToe {
             
             this.cells.forEach((cell, index) => {
                 cell.setAttribute('role', 'gridcell');
-                cell.setAttribute('aria-label', `Zelle ${index + 1}, leer`);
+                cell.setAttribute('aria-label', `Cell ${index + 1}, empty`);
                 cell.setAttribute('tabindex', this.isPlayerTurn ? '0' : '-1');
                 cell.setAttribute('aria-disabled', 'false');
                 cell.addEventListener('keydown', (e) => {
@@ -343,7 +343,7 @@ class TicTacToe {
                     } else {
                         // Revert selection if game is in progress
                         e.target.value = this.aiDifficulty;
-                        this.message.textContent = 'Schwierigkeit kann nur vor Spielbeginn geändert werden!';
+                        this.message.textContent = 'Difficulty can only be changed before the game starts!';
                         setTimeout(() => {
                             if (this.message) this.message.textContent = '';
                         }, 2000);
@@ -417,7 +417,7 @@ class TicTacToe {
             this.updateMoveCounter();
         } catch (error) {
             console.error('Initialization error:', error);
-            this.message.textContent = 'Fehler beim Laden des Spiels';
+            this.message.textContent = 'Error loading game';
         }
     }
     
@@ -554,8 +554,8 @@ class TicTacToe {
         if (cellElement) {
             cellElement.textContent = player;
             cellElement.classList.add('occupied', player.toLowerCase());
-            const playerName = player === 'X' ? 'Du' : 'Computer';
-            cellElement.setAttribute('aria-label', `Zelle ${index + 1}, ${player} von ${playerName}`);
+            const playerName = player === 'X' ? 'You' : 'Computer';
+            cellElement.setAttribute('aria-label', `Cell ${index + 1}, ${player} by ${playerName}`);
             cellElement.setAttribute('tabindex', '-1');
             cellElement.setAttribute('aria-disabled', 'true');
             cellElement.classList.add('animate-mark');
@@ -565,7 +565,7 @@ class TicTacToe {
             if (cell) {
                 cell.textContent = player;
                 cell.classList.add('occupied', player.toLowerCase());
-                cell.setAttribute('aria-label', `Zelle ${index + 1}, ${player} von Computer`);
+                cell.setAttribute('aria-label', `Cell ${index + 1}, ${player} by Computer`);
                 cell.setAttribute('tabindex', '-1');
                 cell.setAttribute('aria-disabled', 'true');
                 cell.classList.add('animate-mark');
@@ -591,10 +591,10 @@ class TicTacToe {
                 this.highlightWinningLine();
                 this.celebrateWin();
                 if (winner === 'X') {
-                    this.message.textContent = 'Du hast gewonnen!';
+                    this.message.textContent = 'You won!';
                     this.soundManager.playWin();
                 } else {
-                    this.message.textContent = 'Der Computer hat gewonnen!';
+                    this.message.textContent = 'Computer won!';
                     this.soundManager.playLose();
                 }
                 this.message.classList.add('win');
@@ -615,7 +615,7 @@ class TicTacToe {
         if (this.checkDraw() && !winnerResult) {
             this.gameActive = false;
             this.isPlayerTurn = false;
-            this.message.textContent = 'Unentschieden!';
+            this.message.textContent = 'Draw!';
             this.message.classList.add('draw');
             this.soundManager.playDraw();
             this.scores.draw = (this.scores.draw || 0) + 1;
@@ -893,7 +893,7 @@ class TicTacToe {
         
         // Update message
         if (this.message) {
-            this.message.textContent = 'Computer ist am Zug...';
+            this.message.textContent = 'Computer is thinking...';
             this.message.classList.remove('win', 'draw');
         }
     }
@@ -1074,7 +1074,7 @@ class TicTacToe {
     
     updateMoveCounter() {
         if (this.moveCounter) {
-            this.moveCounter.textContent = `Züge: ${this.moveCount}`;
+            this.moveCounter.textContent = `Moves: ${this.moveCount}`;
         }
     }
     
@@ -1093,24 +1093,24 @@ class TicTacToe {
     updateDisplay() {
         if (this.playerIndicator) {
             if (this.isPlayerTurn && this.gameActive) {
-                this.playerIndicator.textContent = 'X (Du)';
+                this.playerIndicator.textContent = 'X (You)';
                 this.playerIndicator.style.color = '#e74c3c';
             } else if (!this.isPlayerTurn && this.gameActive) {
-                this.playerIndicator.textContent = 'O (Computer denkt...)';
+                this.playerIndicator.textContent = 'O (Computer thinking...)';
                 this.playerIndicator.style.color = '#3498db';
             } else if (!this.gameActive) {
                 // Game ended
                 if (this.winningLine) {
                     const winner = this.board[this.winningLine[0]];
                     if (winner === 'X') {
-                        this.playerIndicator.textContent = 'X (Du) - Gewinner!';
+                        this.playerIndicator.textContent = 'X (You) - Winner!';
                         this.playerIndicator.style.color = '#2ecc71';
                     } else {
-                        this.playerIndicator.textContent = 'O (Computer) - Gewinner!';
+                        this.playerIndicator.textContent = 'O (Computer) - Winner!';
                         this.playerIndicator.style.color = '#e74c3c';
                     }
                 } else {
-                    this.playerIndicator.textContent = 'Unentschieden';
+                    this.playerIndicator.textContent = 'Draw';
                     this.playerIndicator.style.color = '#f39c12';
                 }
             } else {
@@ -1276,7 +1276,7 @@ class TicTacToe {
     
     showGameHistory() {
         if (this.gameHistory.length === 0) {
-            this.message.textContent = 'Keine Spielhistorie vorhanden!';
+            this.message.textContent = 'No game history available!';
             setTimeout(() => {
                 if (this.message) this.message.textContent = '';
             }, 2000);
@@ -1290,7 +1290,7 @@ class TicTacToe {
         modal.innerHTML = `
             <div class="modal-content" style="max-width: 700px;">
                 <span class="close" id="history-close">&times;</span>
-                <h2>Spielhistorie</h2>
+                <h2>Game History</h2>
                 <div class="history-list" id="history-list"></div>
             </div>
         `;
@@ -1300,7 +1300,7 @@ class TicTacToe {
         this.gameHistory.forEach((game, index) => {
             const item = document.createElement('div');
             item.className = 'history-item';
-            const resultText = game.result === 'X' ? 'Gewonnen' : game.result === 'O' ? 'Verloren' : game.result === 'draw' ? 'Unentschieden' : 'Abgebrochen';
+            const resultText = game.result === 'X' ? 'Won' : game.result === 'O' ? 'Lost' : game.result === 'draw' ? 'Draw' : 'Abandoned';
             const resultClass = game.result === 'X' ? 'win' : game.result === 'O' ? 'lose' : game.result === 'draw' ? 'draw' : 'abandoned';
             const date = new Date(game.startTime).toLocaleString('de-DE');
             const duration = Math.round(game.duration / 1000);
@@ -1314,8 +1314,8 @@ class TicTacToe {
                 <div class="history-item-details">
                     <span>${date}</span>
                     <span>${duration}s</span>
-                    <span>${game.moves.length} Züge</span>
-                    <button class="replay-game-btn" data-index="${index}">▶ Abspielen</button>
+                    <span>${game.moves.length} moves</span>
+                    <button class="replay-game-btn" data-index="${index}">▶ Play</button>
                 </div>
             `;
             list.appendChild(item);
@@ -1342,7 +1342,7 @@ class TicTacToe {
     }
     
     getDifficultyLabel(difficulty) {
-        const labels = { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' };
+        const labels = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         return labels[difficulty] || difficulty;
     }
     
@@ -1369,7 +1369,7 @@ class TicTacToe {
             this.replayControls.style.display = 'flex';
         }
         
-        this.message.textContent = `Wiedergabe: ${this.getDifficultyLabel(game.difficulty)} - ${game.result === 'X' ? 'Gewonnen' : game.result === 'O' ? 'Verloren' : 'Unentschieden'}`;
+        this.message.textContent = `Replay: ${this.getDifficultyLabel(game.difficulty)} - ${game.result === 'X' ? 'Won' : game.result === 'O' ? 'Lost' : 'Draw'}`;
         this.updateReplayControls();
     }
     
@@ -1382,7 +1382,7 @@ class TicTacToe {
             const cell = this.cells[move.index];
             cell.textContent = move.player;
             cell.classList.add('occupied', move.player.toLowerCase());
-            cell.setAttribute('aria-label', `Zelle ${move.index + 1}, ${move.player}`);
+            cell.setAttribute('aria-label', `Cell ${move.index + 1}, ${move.player}`);
             cell.classList.add('animate-mark');
             this.moveCount++;
             this.replayIndex++;
@@ -1434,58 +1434,58 @@ class TicTacToe {
         // First win
         if (result === 'win' && !this.achievements.firstWin) {
             this.achievements.firstWin = true;
-            newAchievements.push({ id: 'firstWin', name: 'Erster Sieg', description: 'Gewinne dein erstes Spiel!' });
+            newAchievements.push({ id: 'firstWin', name: 'First Win', description: 'Win your first game!' });
         }
         
         // First draw
         if (result === 'draw' && !this.achievements.firstDraw) {
             this.achievements.firstDraw = true;
-            newAchievements.push({ id: 'firstDraw', name: 'Unentschieden', description: 'Spiele dein erstes Unentschieden!' });
+            newAchievements.push({ id: 'firstDraw', name: 'Draw', description: 'Play your first draw!' });
         }
         
         // Win streaks
         const winStreak = this.calculateWinStreak();
         if (winStreak >= 3 && !this.achievements.winStreak3) {
             this.achievements.winStreak3 = true;
-            newAchievements.push({ id: 'winStreak3', name: 'Heißer Lauf', description: 'Gewinne 3 Spiele in Folge!' });
+            newAchievements.push({ id: 'winStreak3', name: 'Hot Streak', description: 'Win 3 games in a row!' });
         }
         if (winStreak >= 5 && !this.achievements.winStreak5) {
             this.achievements.winStreak5 = true;
-            newAchievements.push({ id: 'winStreak5', name: 'Unaufhaltsam', description: 'Gewinne 5 Spiele in Folge!' });
+            newAchievements.push({ id: 'winStreak5', name: 'Unstoppable', description: 'Win 5 games in a row!' });
         }
         if (winStreak >= 10 && !this.achievements.winStreak10) {
             this.achievements.winStreak10 = true;
-            newAchievements.push({ id: 'winStreak10', name: 'Legende', description: 'Gewinne 10 Spiele in Folge!' });
+            newAchievements.push({ id: 'winStreak10', name: 'Legend', description: 'Win 10 games in a row!' });
         }
         
         // Perfect game (win in 5 moves)
         if (result === 'win' && this.moveCount <= 5 && !this.achievements.perfectGame) {
             this.achievements.perfectGame = true;
-            newAchievements.push({ id: 'perfectGame', name: 'Perfektes Spiel', description: 'Gewinne in 5 Zügen oder weniger!' });
+            newAchievements.push({ id: 'perfectGame', name: 'Perfect Game', description: 'Win in 5 moves or less!' });
         }
         
         // Underdog (win against hard AI)
         if (result === 'win' && this.aiDifficulty === 'hard' && !this.achievements.underdog) {
             this.achievements.underdog = true;
-            newAchievements.push({ id: 'underdog', name: 'Underdog', description: 'Besiege die KI auf höchster Schwierigkeit!' });
+            newAchievements.push({ id: 'underdog', name: 'Underdog', description: 'Beat the AI on highest difficulty!' });
         }
         
         // Speed demon (win in under 30 seconds)
         if (result === 'win' && this.currentGameHistory && this.currentGameHistory.duration < 30000 && !this.achievements.speedDemon) {
             this.achievements.speedDemon = true;
-            newAchievements.push({ id: 'speedDemon', name: 'Geschwindigkeitsdämon', description: 'Gewinne in unter 30 Sekunden!' });
+            newAchievements.push({ id: 'speedDemon', name: 'Speed Demon', description: 'Win in under 30 seconds!' });
         }
         
         // Master (50 wins)
         if (this.scores.X >= 50 && !this.achievements.master) {
             this.achievements.master = true;
-            newAchievements.push({ id: 'master', name: 'Meister', description: 'Gewinne 50 Spiele!' });
+            newAchievements.push({ id: 'master', name: 'Master', description: 'Win 50 games!' });
         }
         
         // Grandmaster (100 wins)
         if (this.scores.X >= 100 && !this.achievements.grandmaster) {
             this.achievements.grandmaster = true;
-            newAchievements.push({ id: 'grandmaster', name: 'Großmeister', description: 'Gewinne 100 Spiele!' });
+            newAchievements.push({ id: 'grandmaster', name: 'Grandmaster', description: 'Win 100 games!' });
         }
         
         if (newAchievements.length > 0) {
@@ -1514,7 +1514,7 @@ class TicTacToe {
                 notification.innerHTML = `
                     <div class="achievement-icon">🏆</div>
                     <div class="achievement-content">
-                        <div class="achievement-title">Erfolg freigeschaltet!</div>
+                        <div class="achievement-title">Achievement Unlocked!</div>
                         <div class="achievement-name">${achievement.name}</div>
                         <div class="achievement-desc">${achievement.description}</div>
                     </div>
@@ -1549,12 +1549,12 @@ class TicTacToe {
         modal.innerHTML = `
             <div class="modal-content" style="max-width: 600px;">
                 <span class="close" id="achievements-close">&times;</span>
-                <h2>🏆 Erfolge</h2>
+                <h2>🏆 Achievements</h2>
                 <div class="achievements-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
-                    <div class="progress-text">${unlockedCount} / ${totalAchievements} freigeschaltet (${progress}%)</div>
+                    <div class="progress-text">${unlockedCount} / ${totalAchievements} unlocked (${progress}%)</div>
                 </div>
                 <div class="achievements-list" id="achievements-list"></div>
             </div>
@@ -1563,16 +1563,16 @@ class TicTacToe {
         
         const list = document.getElementById('achievements-list');
         const achievementData = {
-            firstWin: { name: 'Erster Sieg', description: 'Gewinne dein erstes Spiel!', icon: '🎯' },
-            firstDraw: { name: 'Unentschieden', description: 'Spiele dein erstes Unentschieden!', icon: '🤝' },
-            winStreak3: { name: 'Heißer Lauf', description: 'Gewinne 3 Spiele in Folge!', icon: '🔥' },
-            winStreak5: { name: 'Unaufhaltsam', description: 'Gewinne 5 Spiele in Folge!', icon: '⚡' },
-            winStreak10: { name: 'Legende', description: 'Gewinne 10 Spiele in Folge!', icon: '👑' },
-            perfectGame: { name: 'Perfektes Spiel', description: 'Gewinne in 5 Zügen oder weniger!', icon: '✨' },
-            underdog: { name: 'Underdog', description: 'Besiege die KI auf höchster Schwierigkeit!', icon: '💪' },
-            speedDemon: { name: 'Geschwindigkeitsdämon', description: 'Gewinne in unter 30 Sekunden!', icon: '⚡' },
-            master: { name: 'Meister', description: 'Gewinne 50 Spiele!', icon: '🎖️' },
-            grandmaster: { name: 'Großmeister', description: 'Gewinne 100 Spiele!', icon: '👑' }
+            firstWin: { name: 'First Win', description: 'Win your first game!', icon: '🎯' },
+            firstDraw: { name: 'Draw', description: 'Play your first draw!', icon: '🤝' },
+            winStreak3: { name: 'Hot Streak', description: 'Win 3 games in a row!', icon: '🔥' },
+            winStreak5: { name: 'Unstoppable', description: 'Win 5 games in a row!', icon: '⚡' },
+            winStreak10: { name: 'Legend', description: 'Win 10 games in a row!', icon: '👑' },
+            perfectGame: { name: 'Perfect Game', description: 'Win in 5 moves or less!', icon: '✨' },
+            underdog: { name: 'Underdog', description: 'Beat the AI on highest difficulty!', icon: '💪' },
+            speedDemon: { name: 'Speed Demon', description: 'Win in under 30 seconds!', icon: '⚡' },
+            master: { name: 'Master', description: 'Win 50 games!', icon: '🎖️' },
+            grandmaster: { name: 'Grandmaster', description: 'Win 100 games!', icon: '👑' }
         };
         
         Object.entries(achievementData).forEach(([key, data]) => {
@@ -1635,7 +1635,7 @@ class TicTacToe {
             clearInterval(this.replayInterval);
             this.replayInterval = null;
             if (this.replayPlayPauseBtn) {
-                this.replayPlayPauseBtn.textContent = '▶ Abspielen';
+                this.replayPlayPauseBtn.textContent = '▶ Play';
             }
         } else {
             this.replayInterval = setInterval(() => {
@@ -1646,7 +1646,7 @@ class TicTacToe {
                 }
             }, 800);
             if (this.replayPlayPauseBtn) {
-                this.replayPlayPauseBtn.textContent = '⏸ Pausieren';
+                this.replayPlayPauseBtn.textContent = '⏸ Pause';
             }
         }
     }
