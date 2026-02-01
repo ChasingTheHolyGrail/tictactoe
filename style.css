@@ -267,7 +267,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 0 28px 0;
+    margin: 0 0 24px 0;
     padding: 0;
     font-size: 2.8em;
     font-weight: 800;
@@ -281,7 +281,7 @@ h1 {
 h1::after {
     content: '';
     position: absolute;
-    bottom: -12px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
     width: 64px;
@@ -306,14 +306,14 @@ body.dark-mode h1::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 24px 0;
-    padding: 20px;
+    margin: 0 0 20px 0;
+    padding: 18px 20px;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 16px;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 14px;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
@@ -465,9 +465,9 @@ body.dark-mode .move-info {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 0 0 24px 0;
+    margin: 0 0 20px 0;
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    padding: 16px;
+    padding: 14px;
     border-radius: 20px;
     transition: all 0.3s ease;
     box-shadow: 
@@ -810,7 +810,7 @@ body.dark-mode .cell:hover:not(.occupied) {
     gap: 10px;
     justify-content: center;
     align-items: center;
-    margin: 0 0 16px 0;
+    margin: 0 0 14px 0;
     padding: 0;
     flex-wrap: wrap;
 }
@@ -820,8 +820,8 @@ body.dark-mode .cell:hover:not(.occupied) {
     gap: 10px;
     justify-content: center;
     align-items: center;
-    margin: 0 0 16px 0;
-    padding: 16px;
+    margin: 0 0 14px 0;
+    padding: 14px 16px;
     background: rgba(102, 126, 234, 0.1);
     border-radius: 12px;
     flex-wrap: wrap;
@@ -1383,7 +1383,7 @@ button:disabled:hover::after {
     font-weight: 600;
     min-height: 48px;
     margin: 0;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -1391,7 +1391,7 @@ button:disabled:hover::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 @keyframes slideInMessage {
