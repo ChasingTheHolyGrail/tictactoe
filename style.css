@@ -59,7 +59,7 @@ body.dark-mode::before {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
-    padding: 40px 32px 32px 32px;
+    padding: 64px 32px 32px 32px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 2px 8px rgba(0, 0, 0, 0.05),
@@ -85,8 +85,8 @@ body.dark-mode .container {
 
 .header-controls {
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 20px;
+    right: 20px;
     display: flex;
     gap: 12px;
     align-items: center;
@@ -133,7 +133,7 @@ body.dark-mode .container {
 .sound-toggle::after {
     content: attr(aria-label);
     position: absolute;
-    bottom: -40px;
+    bottom: -38px;
     left: 50%;
     transform: translateX(-50%) translateY(5px);
     background: rgba(0, 0, 0, 0.9);
@@ -147,6 +147,9 @@ body.dark-mode .container {
     transition: all 0.3s ease;
     z-index: 1000;
     font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .theme-toggle:hover::after,
@@ -169,13 +172,15 @@ body.dark-mode .container {
     background: rgba(255, 255, 255, 0.3);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .theme-toggle:hover::before,
 .help-btn:hover::before,
 .sound-toggle:hover::before {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
 }
 
 .theme-toggle:hover,
@@ -317,7 +322,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 0 24px 0;
+    margin: 0 80px 24px 80px;
     padding: 0;
     font-size: 2.8em;
     font-weight: 800;
