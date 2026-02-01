@@ -131,6 +131,10 @@ class TicTacToe {
         this.aiPlayer = 'O'; // AI is always O
         this.aiDifficulty = this.loadDifficulty(); // Load AI difficulty level
         this.soundManager = new SoundManager(); // Initialize sound manager
+        this.gameHistory = this.loadGameHistory(); // Load saved game history
+        this.isReplayMode = false;
+        this.replayIndex = 0;
+        this.replayGame = null;
         
         // Load scores from localStorage or initialize
         this.scores = this.loadScores();
@@ -205,6 +209,13 @@ class TicTacToe {
             this.helpModal = document.getElementById('help-modal');
             this.closeModal = document.querySelector('.close');
             this.difficultySelect = document.getElementById('difficulty-select');
+            this.historyBtn = document.getElementById('history-btn');
+            this.replayControls = document.getElementById('replay-controls');
+            this.replayPrevBtn = document.getElementById('replay-prev');
+            this.replayPlayPauseBtn = document.getElementById('replay-play-pause');
+            this.replayNextBtn = document.getElementById('replay-next');
+            this.replayCloseBtn = document.getElementById('replay-close');
+            this.replayInterval = null;
             
             this.resetBtn.addEventListener('click', () => this.resetGame());
             this.resetScoreBtn.addEventListener('click', () => this.resetScore());
@@ -260,6 +271,21 @@ class TicTacToe {
                         this.hideHelp();
                     }
                 });
+            }
+            if (this.historyBtn) {
+                this.historyBtn.addEventListener('click', () => this.showGameHistory());
+            }
+            if (this.replayPrevBtn) {
+                this.replayPrevBtn.addEventListener('click', () => this.replayPreviousMove());
+            }
+            if (this.replayPlayPauseBtn) {
+                this.replayPlayPauseBtn.addEventListener('click', () => this.toggleReplay());
+            }
+            if (this.replayNextBtn) {
+                this.replayNextBtn.addEventListener('click', () => this.replayNextMove());
+            }
+            if (this.replayCloseBtn) {
+                this.replayCloseBtn.addEventListener('click', () => this.closeReplay());
             }
             
             // Keyboard shortcuts
@@ -439,6 +465,7 @@ class TicTacToe {
                 this.saveScores();
                 this.saveStats();
                 this.updateScore();
+                this.finalizeGameHistory(winner);
                 return true;
             }
         }
@@ -456,10 +483,46 @@ class TicTacToe {
             this.saveScores();
             this.saveStats();
             this.updateScore();
+            this.finalizeGameHistory('draw');
             return true;
         }
         
         return false;
+    }
+    
+    saveMoveToHistory(index, player) {
+        if (!this.currentGameHistory) {
+            this.currentGameHistory = {
+                moves: [],
+                difficulty: this.aiDifficulty,
+                startTime: Date.now(),
+                result: null
+            };
+        }
+        this.currentGameHistory.moves.push({
+            index: index,
+            player: player,
+            moveNumber: this.moveCount
+        });
+    }
+    
+    finalizeGameHistory(result) {
+        if (this.currentGameHistory) {
+            this.currentGameHistory.result = result;
+            this.currentGameHistory.endTime = Date.now();
+            this.currentGameHistory.duration = this.currentGameHistory.endTime - this.currentGameHistory.startTime;
+            this.currentGameHistory.board = [...this.board];
+            this.currentGameHistory.winningLine = this.winningLine;
+            
+            // Add to game history (keep last 50 games)
+            this.gameHistory.unshift(this.currentGameHistory);
+            if (this.gameHistory.length > 50) {
+                this.gameHistory = this.gameHistory.slice(0, 50);
+            }
+            
+            this.saveGameHistory();
+            this.currentGameHistory = null;
+        }
     }
     
     makeAIMove() {
@@ -478,6 +541,9 @@ class TicTacToe {
         if (bestMove !== -1 && bestMove >= 0 && bestMove < 9 && this.board[bestMove] === '') {
             this.makeMove(bestMove, this.aiPlayer);
             this.soundManager.playMove();
+            
+            // Save move to game history
+            this.saveMoveToHistory(bestMove, this.aiPlayer);
             
             // Check for game end
             if (!this.checkGameEnd()) {
@@ -742,6 +808,12 @@ class TicTacToe {
     }
     
     resetGame() {
+        // Finalize current game history if exists
+        if (this.currentGameHistory && this.moveCount > 0) {
+            this.finalizeGameHistory('abandoned');
+        }
+        this.currentGameHistory = null;
+        
         this.board = Array(9).fill('');
         this.currentPlayer = 'X';
         this.gameActive = true;
@@ -1009,6 +1081,226 @@ class TicTacToe {
     updateSoundButton() {
         if (this.soundToggle) {
             this.soundToggle.textContent = this.soundManager.soundsEnabled ? '🔊' : '🔇';
+        }
+    }
+    
+    loadGameHistory() {
+        try {
+            const saved = localStorage.getItem('ticTacToeGameHistory');
+            return saved ? JSON.parse(saved) : [];
+        } catch (e) {
+            console.error('Error loading game history:', e);
+            return [];
+        }
+    }
+    
+    saveGameHistory() {
+        try {
+            localStorage.setItem('ticTacToeGameHistory', JSON.stringify(this.gameHistory));
+        } catch (e) {
+            console.error('Error saving game history:', e);
+        }
+    }
+    
+    showGameHistory() {
+        if (this.gameHistory.length === 0) {
+            this.message.textContent = 'Keine Spielhistorie vorhanden!';
+            setTimeout(() => {
+                if (this.message) this.message.textContent = '';
+            }, 2000);
+            return;
+        }
+        
+        // Create history modal
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.id = 'history-modal';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 700px;">
+                <span class="close" id="history-close">&times;</span>
+                <h2>Spielhistorie</h2>
+                <div class="history-list" id="history-list"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const list = document.getElementById('history-list');
+        this.gameHistory.forEach((game, index) => {
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            const resultText = game.result === 'X' ? 'Gewonnen' : game.result === 'O' ? 'Verloren' : game.result === 'draw' ? 'Unentschieden' : 'Abgebrochen';
+            const resultClass = game.result === 'X' ? 'win' : game.result === 'O' ? 'lose' : game.result === 'draw' ? 'draw' : 'abandoned';
+            const date = new Date(game.startTime).toLocaleString('de-DE');
+            const duration = Math.round(game.duration / 1000);
+            
+            item.innerHTML = `
+                <div class="history-item-header">
+                    <span class="history-number">#${index + 1}</span>
+                    <span class="history-result ${resultClass}">${resultText}</span>
+                    <span class="history-difficulty">${this.getDifficultyLabel(game.difficulty)}</span>
+                </div>
+                <div class="history-item-details">
+                    <span>${date}</span>
+                    <span>${duration}s</span>
+                    <span>${game.moves.length} Züge</span>
+                    <button class="replay-game-btn" data-index="${index}">▶ Abspielen</button>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+        
+        document.getElementById('history-close').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+        
+        document.querySelectorAll('.replay-game-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                document.body.removeChild(modal);
+                this.startReplay(this.gameHistory[index]);
+            });
+        });
+        
+        modal.style.display = 'block';
+    }
+    
+    getDifficultyLabel(difficulty) {
+        const labels = { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' };
+        return labels[difficulty] || difficulty;
+    }
+    
+    startReplay(game) {
+        this.isReplayMode = true;
+        this.replayGame = game;
+        this.replayIndex = 0;
+        this.gameActive = false;
+        this.isPlayerTurn = false;
+        
+        // Reset board
+        this.board = Array(9).fill('');
+        this.winningLine = null;
+        this.moveCount = 0;
+        this.cells.forEach((cell, index) => {
+            cell.textContent = '';
+            cell.classList.remove('occupied', 'x', 'o', 'winning-cell', 'animate-mark');
+            cell.setAttribute('aria-label', `Zelle ${index + 1}, leer`);
+            cell.style.pointerEvents = 'none';
+        });
+        
+        // Show replay controls
+        if (this.replayControls) {
+            this.replayControls.style.display = 'flex';
+        }
+        
+        this.message.textContent = `Wiedergabe: ${this.getDifficultyLabel(game.difficulty)} - ${game.result === 'X' ? 'Gewonnen' : game.result === 'O' ? 'Verloren' : 'Unentschieden'}`;
+        this.updateReplayControls();
+    }
+    
+    replayNextMove() {
+        if (!this.isReplayMode || !this.replayGame) return;
+        
+        if (this.replayIndex < this.replayGame.moves.length) {
+            const move = this.replayGame.moves[this.replayIndex];
+            this.board[move.index] = move.player;
+            const cell = this.cells[move.index];
+            cell.textContent = move.player;
+            cell.classList.add('occupied', move.player.toLowerCase());
+            cell.setAttribute('aria-label', `Zelle ${move.index + 1}, ${move.player}`);
+            cell.classList.add('animate-mark');
+            this.moveCount++;
+            this.replayIndex++;
+            
+            // Check if game ended
+            if (this.replayIndex === this.replayGame.moves.length) {
+                if (this.replayGame.winningLine) {
+                    this.winningLine = this.replayGame.winningLine;
+                    this.highlightWinningLine();
+                }
+            }
+            
+            this.updateReplayControls();
+        }
+    }
+    
+    replayPreviousMove() {
+        if (!this.isReplayMode || !this.replayGame || this.replayIndex === 0) return;
+        
+        this.replayIndex--;
+        const move = this.replayGame.moves[this.replayIndex];
+        this.board[move.index] = '';
+        const cell = this.cells[move.index];
+        cell.textContent = '';
+        cell.classList.remove('occupied', 'x', 'o', 'winning-cell', 'animate-mark');
+        cell.setAttribute('aria-label', `Zelle ${move.index + 1}, leer`);
+        this.moveCount--;
+        
+        // Clear winning line if we go back
+        if (this.winningLine) {
+            this.winningLine.forEach(index => {
+                const winCell = this.cells[index];
+                if (winCell) {
+                    winCell.classList.remove('winning-cell');
+                }
+            });
+            this.winningLine = null;
+        }
+        
+        this.updateReplayControls();
+    }
+    
+    toggleReplay() {
+        if (!this.isReplayMode) return;
+        
+        if (this.replayInterval) {
+            clearInterval(this.replayInterval);
+            this.replayInterval = null;
+            if (this.replayPlayPauseBtn) {
+                this.replayPlayPauseBtn.textContent = '▶ Abspielen';
+            }
+        } else {
+            this.replayInterval = setInterval(() => {
+                if (this.replayIndex < this.replayGame.moves.length) {
+                    this.replayNextMove();
+                } else {
+                    this.toggleReplay();
+                }
+            }, 800);
+            if (this.replayPlayPauseBtn) {
+                this.replayPlayPauseBtn.textContent = '⏸ Pausieren';
+            }
+        }
+    }
+    
+    closeReplay() {
+        this.isReplayMode = false;
+        this.replayGame = null;
+        this.replayIndex = 0;
+        if (this.replayInterval) {
+            clearInterval(this.replayInterval);
+            this.replayInterval = null;
+        }
+        if (this.replayControls) {
+            this.replayControls.style.display = 'none';
+        }
+        this.resetGame();
+    }
+    
+    updateReplayControls() {
+        if (!this.isReplayMode) return;
+        
+        if (this.replayPrevBtn) {
+            this.replayPrevBtn.disabled = this.replayIndex === 0;
+        }
+        if (this.replayNextBtn) {
+            this.replayNextBtn.disabled = this.replayIndex >= this.replayGame.moves.length;
+        }
+        if (this.replayPlayPauseBtn) {
+            this.replayPlayPauseBtn.disabled = this.replayIndex >= this.replayGame.moves.length;
         }
     }
 }

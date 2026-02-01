@@ -387,6 +387,129 @@ body.dark-mode .game-board.ai-thinking::after {
     gap: 10px;
     justify-content: center;
     margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.replay-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+body.dark-mode .replay-controls {
+    background: rgba(52, 73, 94, 0.3);
+}
+
+.history-list {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.history-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    transition: all 0.2s;
+}
+
+body.dark-mode .history-item {
+    background: #34495e;
+    border-left-color: #3498db;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.history-item-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.history-number {
+    color: #667eea;
+    font-size: 1.1em;
+}
+
+.history-result {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9em;
+}
+
+.history-result.win {
+    background: #2ecc71;
+    color: white;
+}
+
+.history-result.lose {
+    background: #e74c3c;
+    color: white;
+}
+
+.history-result.draw {
+    background: #f39c12;
+    color: white;
+}
+
+.history-result.abandoned {
+    background: #95a5a6;
+    color: white;
+}
+
+.history-difficulty {
+    margin-left: auto;
+    padding: 4px 10px;
+    background: #ddd;
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+body.dark-mode .history-difficulty {
+    background: #2c3e50;
+    color: #ecf0f1;
+}
+
+.history-item-details {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9em;
+    color: #666;
+    flex-wrap: wrap;
+}
+
+body.dark-mode .history-item-details {
+    color: #bdc3c7;
+}
+
+.replay-game-btn {
+    margin-left: auto;
+    padding: 6px 15px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s;
+}
+
+.replay-game-btn:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
 }
 
 button {
