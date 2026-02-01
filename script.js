@@ -242,6 +242,7 @@ class TicTacToe {
         this.isReplayMode = false;
         this.replayIndex = 0;
         this.replayGame = null;
+        this.achievements = this.loadAchievements(); // Load achievements
         
         // Load scores from localStorage or initialize
         this.scores = this.loadScores();
