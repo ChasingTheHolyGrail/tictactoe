@@ -198,6 +198,18 @@ class TicTacToe {
     }
     
     makeMove(index, player, cellElement = null) {
+        // Validate move
+        if (index < 0 || index > 8 || this.board[index] !== '' || !this.gameActive) {
+            console.error('Invalid move attempted:', { index, player, cellOccupied: this.board[index] });
+            return false;
+        }
+        
+        // Validate player
+        if (player !== 'X' && player !== 'O') {
+            console.error('Invalid player:', player);
+            return false;
+        }
+        
         // Save move to history
         this.moveHistory.push({
             index: index,
@@ -227,54 +239,70 @@ class TicTacToe {
         this.moveCount++;
         this.updateMoveCounter();
         this.updateUndoButton();
+        return true;
     }
     
     checkGameEnd() {
-        // Check for winner
+        // Check for winner first
         const winnerResult = this.checkWinner();
-        if (winnerResult) {
-            this.gameActive = false;
-            this.isPlayerTurn = false;
-            this.winningLine = winnerResult;
-            this.highlightWinningLine();
-            this.celebrateWin();
+        if (winnerResult && winnerResult.length === 3) {
             const winner = this.board[winnerResult[0]];
-            if (winner === 'X') {
-                this.message.textContent = 'Du hast gewonnen!';
-            } else {
-                this.message.textContent = 'Der Computer hat gewonnen!';
+            // Validate winner is valid
+            if (winner === 'X' || winner === 'O') {
+                this.gameActive = false;
+                this.isPlayerTurn = false;
+                this.winningLine = winnerResult;
+                this.highlightWinningLine();
+                this.celebrateWin();
+                if (winner === 'X') {
+                    this.message.textContent = 'Du hast gewonnen!';
+                } else {
+                    this.message.textContent = 'Der Computer hat gewonnen!';
+                }
+                this.message.classList.add('win');
+                this.scores[winner] = (this.scores[winner] || 0) + 1;
+                this.stats.gamesPlayed = (this.stats.gamesPlayed || 0) + 1;
+                if (!this.stats.wins) this.stats.wins = { X: 0, O: 0 };
+                this.stats.wins[winner] = (this.stats.wins[winner] || 0) + 1;
+                this.saveScores();
+                this.saveStats();
+                this.updateScore();
+                return true;
             }
-            this.message.classList.add('win');
-            this.scores[winner]++;
-            this.stats.gamesPlayed++;
-            this.stats.wins[winner]++;
-            this.saveScores();
-            this.saveStats();
-            this.updateScore();
-            return true;
-        } else if (this.checkDraw()) {
+        }
+        
+        // Check for draw (board full and no winner)
+        if (this.checkDraw() && !winnerResult) {
             this.gameActive = false;
             this.isPlayerTurn = false;
             this.message.textContent = 'Unentschieden!';
             this.message.classList.add('draw');
-            this.scores.draw++;
-            this.stats.gamesPlayed++;
-            this.stats.draws++;
+            this.scores.draw = (this.scores.draw || 0) + 1;
+            this.stats.gamesPlayed = (this.stats.gamesPlayed || 0) + 1;
+            this.stats.draws = (this.stats.draws || 0) + 1;
             this.saveScores();
             this.saveStats();
             this.updateScore();
             return true;
         }
+        
         return false;
     }
     
     makeAIMove() {
         if (!this.gameActive || this.isPlayerTurn) {
+            this.enableBoard();
+            return;
+        }
+        
+        // Safety check: ensure game is still active and board has space
+        if (this.checkGameEnd() || this.isBoardFull(this.board)) {
+            this.enableBoard();
             return;
         }
         
         const bestMove = this.getBestMove();
-        if (bestMove !== -1) {
+        if (bestMove !== -1 && bestMove >= 0 && bestMove < 9 && this.board[bestMove] === '') {
             this.makeMove(bestMove, this.aiPlayer);
             
             // Check for game end
@@ -284,11 +312,33 @@ class TicTacToe {
                 this.currentPlayer = 'X';
                 this.enableBoard();
                 this.updateDisplay();
+            } else {
+                // Game ended, ensure board is enabled for visual consistency
+                this.enableBoard();
             }
+        } else {
+            // Fallback: if no valid move found, enable board and end turn
+            console.warn('AI could not find a valid move');
+            this.isPlayerTurn = true;
+            this.currentPlayer = 'X';
+            this.enableBoard();
+            this.updateDisplay();
         }
     }
     
     getBestMove() {
+        // Safety check: ensure there are available moves
+        const availableMoves = [];
+        for (let i = 0; i < 9; i++) {
+            if (this.board[i] === '') {
+                availableMoves.push(i);
+            }
+        }
+        
+        if (availableMoves.length === 0) {
+            return -1; // No moves available
+        }
+        
         // Use minimax algorithm to find best move
         let bestScore = -Infinity;
         let bestMove = -1;
@@ -307,12 +357,8 @@ class TicTacToe {
         }
         
         // Fallback: if no best move found, pick first available
-        if (bestMove === -1) {
-            for (let i = 0; i < 9; i++) {
-                if (this.board[i] === '') {
-                    return i;
-                }
-            }
+        if (bestMove === -1 && availableMoves.length > 0) {
+            return availableMoves[0];
         }
         
         return bestMove;
