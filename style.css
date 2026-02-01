@@ -681,7 +681,7 @@ body.dark-mode #player-indicator {
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: none;
     box-shadow: 
         0 4px 12px rgba(0, 0, 0, 0.08),
         0 2px 6px rgba(0, 0, 0, 0.04),
@@ -706,7 +706,7 @@ body.dark-mode #player-indicator {
 body.dark-mode .move-info {
     background: rgba(52, 73, 94, 0.6);
     color: #ecf0f1;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
 }
 
 .score {
@@ -728,7 +728,7 @@ body.dark-mode .move-info {
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border-radius: 12px;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    border: none;
     box-shadow: 
         0 6px 16px rgba(0, 0, 0, 0.1),
         0 2px 6px rgba(0, 0, 0, 0.06),
@@ -751,9 +751,8 @@ body.dark-mode .move-info {
     box-shadow: 
         0 10px 24px rgba(0, 0, 0, 0.15),
         0 4px 10px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 1),
-        0 0 0 2px rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.5);
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    border: none;
 }
 
 .score div::before {
