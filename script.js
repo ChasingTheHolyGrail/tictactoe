@@ -15,7 +15,7 @@ class ParticleSystem {
         this.canvas.style.left = '0';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
-        this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.pointerEvents = 'none'; // Important: don't block clicks
         this.canvas.style.zIndex = '9999';
         document.body.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
@@ -277,22 +277,32 @@ class TicTacToe {
             // Use event delegation for better performance
             const gameBoard = document.getElementById('game-board');
             if (gameBoard) {
-                gameBoard.addEventListener('click', (e) => {
-                    // Use closest to handle clicks on child elements (like text)
-                    const cell = e.target.closest('.cell');
-                    if (cell) {
+                // Direct click handler on cells for better reliability
+                this.cells.forEach((cell) => {
+                    cell.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         this.handleCellClick({ target: cell });
-                    }
+                    });
                 });
                 
-                // Touch support with passive listeners
-                gameBoard.addEventListener('touchend', (e) => {
+                // Also keep delegation as backup
+                gameBoard.addEventListener('click', (e) => {
                     const cell = e.target.closest('.cell');
-                    if (cell) {
-                        e.preventDefault();
+                    if (cell && !cell.hasAttribute('data-handled')) {
+                        cell.setAttribute('data-handled', 'true');
+                        setTimeout(() => cell.removeAttribute('data-handled'), 100);
                         this.handleCellClick({ target: cell });
                     }
-                }, { passive: false });
+                }, true);
+                
+                // Touch support
+                this.cells.forEach((cell) => {
+                    cell.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.handleCellClick({ target: cell });
+                    }, { passive: false });
+                });
             }
             
             this.cells.forEach((cell, index) => {
@@ -455,16 +465,22 @@ class TicTacToe {
     }
     
     handleCellClick(e) {
+        console.log('handleCellClick called', e.target); // Debug
+        
         // Prevent clicks during replay mode
         if (this.isReplayMode) {
+            console.log('Blocked: replay mode');
             return;
         }
         
-        // Get the cell element (handle both direct clicks and clicks on child elements)
-        const cell = e.target.classList ? e.target : e.target.closest ? e.target.closest('.cell') : null;
+        // Get the cell element
+        const cell = e.target;
         if (!cell || !cell.classList || !cell.classList.contains('cell')) {
+            console.log('Blocked: not a cell', cell);
             return;
         }
+        
+        console.log('Processing click on cell', cell.getAttribute('data-index'));
         
         // Only allow player (X) to make moves
         if (!this.isPlayerTurn || this.currentPlayer !== 'X') {
