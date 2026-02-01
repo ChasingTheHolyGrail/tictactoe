@@ -221,7 +221,7 @@ body.dark-mode .sound-toggle {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 0 28px 0;
+    margin: 0 0 30px 0;
     padding: 12px 18px;
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(10px);
@@ -330,7 +330,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 90px 24px 90px;
+    margin: 0 95px 28px 95px;
     padding: 0;
     font-size: 2.8em;
     font-weight: 800;
@@ -369,7 +369,7 @@ body.dark-mode h1::after {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin: 0 0 36px 0;
+    margin: 0 0 34px 0;
     padding: 20px 24px;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
@@ -584,7 +584,7 @@ body.dark-mode .move-info {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 0 0 28px 0;
+    margin: 0 0 30px 0;
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     padding: 20px;
     border-radius: 20px;
@@ -970,7 +970,7 @@ body.dark-mode .cell:active:not(.occupied) {
     gap: 12px;
     justify-content: center;
     align-items: center;
-    margin: 0 0 20px 0;
+    margin: 0 0 18px 0;
     padding: 20px;
     flex-wrap: wrap;
     background: rgba(255, 255, 255, 0.4);
