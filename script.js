@@ -140,8 +140,8 @@ class TicTacToe {
             e.preventDefault();
             this.hideHelp();
         }
-        // Number keys 1-9 for quick cell selection
-        else if (e.key >= '1' && e.key <= '9' && this.gameActive) {
+        // Number keys 1-9 for quick cell selection (only during player's turn)
+        else if (e.key >= '1' && e.key <= '9' && this.gameActive && this.isPlayerTurn) {
             e.preventDefault();
             const index = parseInt(e.key) - 1;
             if (index >= 0 && index <= 8 && this.cells[index]) {
@@ -190,6 +190,7 @@ class TicTacToe {
             // If game continues, AI makes move
             this.isPlayerTurn = false;
             this.updateDisplay();
+            this.disableBoard();
             setTimeout(() => {
                 this.makeAIMove();
             }, 500); // Small delay for better UX
@@ -281,6 +282,7 @@ class TicTacToe {
                 // Game continues, player's turn
                 this.isPlayerTurn = true;
                 this.currentPlayer = 'X';
+                this.enableBoard();
                 this.updateDisplay();
             }
         }
@@ -368,6 +370,32 @@ class TicTacToe {
         return board.every(cell => cell !== '');
     }
     
+    disableBoard() {
+        // Add visual feedback that board is disabled
+        const gameBoard = document.getElementById('game-board');
+        if (gameBoard) {
+            gameBoard.classList.add('ai-thinking');
+        }
+        this.cells.forEach(cell => {
+            cell.style.pointerEvents = 'none';
+            cell.style.opacity = '0.6';
+        });
+    }
+    
+    enableBoard() {
+        // Re-enable board for player
+        const gameBoard = document.getElementById('game-board');
+        if (gameBoard) {
+            gameBoard.classList.remove('ai-thinking');
+        }
+        this.cells.forEach(cell => {
+            if (cell.textContent === '') {
+                cell.style.pointerEvents = 'auto';
+                cell.style.opacity = '1';
+            }
+        });
+    }
+    
     checkWinner() {
         for (const condition of this.winningConditions) {
             const [a, b, c] = condition;
@@ -410,8 +438,11 @@ class TicTacToe {
             cell.textContent = '';
             cell.classList.remove('occupied', 'x', 'o', 'winning-cell', 'animate-mark');
             cell.setAttribute('aria-label', `Zelle ${index + 1}, leer`);
+            cell.style.pointerEvents = 'auto';
+            cell.style.opacity = '1';
         });
         
+        this.enableBoard();
         this.updateDisplay();
         this.updateMoveCounter();
         this.updateUndoButton();

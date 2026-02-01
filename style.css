@@ -145,6 +145,26 @@ body.dark-mode .move-info {
     background: #333;
     padding: 10px;
     border-radius: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.game-board.ai-thinking {
+    position: relative;
+}
+
+.game-board.ai-thinking::after {
+    content: 'Computer denkt...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    z-index: 10;
+    pointer-events: none;
 }
 
 .cell {
