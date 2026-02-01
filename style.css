@@ -85,12 +85,20 @@ body.dark-mode .container {
 
 .header-controls {
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 20px;
+    right: 20px;
     display: flex;
     gap: 10px;
     align-items: center;
     z-index: 10;
+}
+
+@media (max-width: 520px) {
+    .header-controls {
+        top: 16px;
+        right: 16px;
+        gap: 8px;
+    }
 }
 
 .theme-toggle,
@@ -197,7 +205,7 @@ body.dark-mode .sound-toggle {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 0 24px 0;
+    margin: 24px 0 28px 0;
     padding: 14px 18px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
@@ -209,6 +217,7 @@ body.dark-mode .sound-toggle {
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    order: 1;
 }
 
 body.dark-mode .volume-control {
@@ -324,7 +333,7 @@ body.dark-mode h1::after {
 
 .game-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin: 0 0 24px 0;
     padding: 20px 24px;
@@ -333,7 +342,7 @@ body.dark-mode h1::after {
     -webkit-backdrop-filter: blur(10px);
     border-radius: 16px;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
