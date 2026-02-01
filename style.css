@@ -1644,19 +1644,19 @@ button:disabled:hover::after {
     }
     
     .container {
-        padding: 24px 18px;
+        padding: 56px 18px 24px 18px;
         border-radius: 20px;
         max-width: 100%;
     }
     
     h1 {
         font-size: 2.2em;
-        margin-bottom: 22px;
+        margin: 0 60px 22px 60px;
     }
     
     .header-controls {
-        top: 16px;
-        right: 16px;
+        top: 12px;
+        right: 12px;
         gap: 10px;
     }
     
@@ -1774,17 +1774,17 @@ button:disabled:hover::after {
 
 @media (max-width: 480px) {
     .container {
-        padding: 20px 16px;
+        padding: 52px 16px 20px 16px;
     }
     
     h1 {
         font-size: 1.85em;
-        margin-bottom: 18px;
+        margin: 0 50px 18px 50px;
     }
     
     .header-controls {
-        top: 12px;
-        right: 12px;
+        top: 10px;
+        right: 10px;
         gap: 8px;
     }
     
@@ -1835,6 +1835,16 @@ button:disabled:hover::after {
 @media (max-width: 360px) {
     h1 {
         font-size: 1.6em;
+        margin: 0 45px 18px 45px;
+    }
+    
+    .container {
+        padding: 48px 12px 20px 12px;
+    }
+    
+    .header-controls {
+        top: 8px;
+        right: 8px;
     }
     
     .cell {
@@ -1860,13 +1870,18 @@ button:disabled:hover::after {
     }
     
     .container {
-        padding: 15px;
+        padding: 48px 15px 15px 15px;
         max-width: 90%;
     }
     
     h1 {
         font-size: 1.8em;
-        margin-bottom: 10px;
+        margin: 0 50px 10px 50px;
+    }
+    
+    .header-controls {
+        top: 10px;
+        right: 10px;
     }
     
     .game-info {
