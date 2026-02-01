@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Tic Tac Toe Browser Game - Ein klassisches Tic Tac Toe Spiel">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-controls">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Theme wechseln">🌙</button>
+            <button id="help-btn" class="help-btn" aria-label="Hilfe">?</button>
+        </div>
+        <h1>Tic Tac Toe</h1>
+        <div class="game-info">
+            <div class="current-player">
+                <span>Aktueller Spieler: </span>
+                <span id="player-indicator">X (Du)</span>
+            </div>
+            <div class="move-info">
+                <span id="move-counter">Züge: 0</span>
+            </div>
+            <div class="score">
+                <div>X: <span id="score-x">0</span></div>
+                <div>O: <span id="score-o">0</span></div>
+                <div>Unentschieden: <span id="score-draw">0</span></div>
+            </div>
+        </div>
+        <div class="game-board" id="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div class="controls">
+            <button id="undo-btn" disabled>Rückgängig</button>
+            <button id="reset-btn">Neues Spiel</button>
+            <button id="reset-score-btn">Punkte zurücksetzen</button>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
+    
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Spielregeln</h2>
+            <div class="help-content">
+                <p><strong>Tic Tac Toe</strong> ist ein klassisches Strategiespiel für zwei Spieler.</p>
+                <h3>Ziel:</h3>
+                <p>Als erster drei eigene Symbole in einer Reihe (horizontal, vertikal oder diagonal) platzieren.</p>
+                <h3>Spielablauf:</h3>
+                <ul>
+                    <li>Spieler X beginnt</li>
+                    <li>Wechseln Sie sich ab, um Ihre Symbole zu platzieren</li>
+                    <li>Gewinner ist, wer zuerst drei in einer Reihe hat</li>
+                    <li>Bei einem vollen Spielfeld ohne Gewinner: Unentschieden</li>
+                </ul>
+                <h3>Tastenkürzel:</h3>
+                <ul>
+                    <li><kbd>1-9</kbd>: Schnellzugriff auf Zellen</li>
+                    <li><kbd>Ctrl+Z</kbd> / <kbd>Cmd+Z</kbd>: Zug rückgängig</li>
+                    <li><kbd>R</kbd>: Neues Spiel</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
