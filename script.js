@@ -278,16 +278,19 @@ class TicTacToe {
             const gameBoard = document.getElementById('game-board');
             if (gameBoard) {
                 gameBoard.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('cell')) {
-                        this.handleCellClick(e);
+                    // Use closest to handle clicks on child elements (like text)
+                    const cell = e.target.closest('.cell');
+                    if (cell) {
+                        this.handleCellClick({ target: cell });
                     }
                 });
                 
                 // Touch support with passive listeners
                 gameBoard.addEventListener('touchend', (e) => {
-                    if (e.target.classList.contains('cell')) {
+                    const cell = e.target.closest('.cell');
+                    if (cell) {
                         e.preventDefault();
-                        this.handleCellClick(e);
+                        this.handleCellClick({ target: cell });
                     }
                 }, { passive: false });
             }
@@ -452,6 +455,11 @@ class TicTacToe {
     }
     
     handleCellClick(e) {
+        // Prevent clicks during replay mode
+        if (this.isReplayMode) {
+            return;
+        }
+        
         const cell = e.target;
         if (!cell || !cell.classList.contains('cell')) {
             return;
