@@ -460,8 +460,9 @@ class TicTacToe {
             return;
         }
         
-        const cell = e.target;
-        if (!cell || !cell.classList.contains('cell')) {
+        // Get the cell element (handle both direct clicks and clicks on child elements)
+        const cell = e.target.classList ? e.target : e.target.closest ? e.target.closest('.cell') : null;
+        if (!cell || !cell.classList || !cell.classList.contains('cell')) {
             return;
         }
         
