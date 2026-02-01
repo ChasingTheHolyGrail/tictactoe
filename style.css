@@ -59,7 +59,7 @@ body.dark-mode::before {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
-    padding: 32px;
+    padding: 40px 32px 32px 32px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 2px 8px rgba(0, 0, 0, 0.05),
@@ -298,7 +298,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 8px 0 32px 0;
+    margin: 0 0 24px 0;
     padding: 0;
     font-size: 2.8em;
     font-weight: 800;
@@ -933,11 +933,11 @@ body.dark-mode .cell:active:not(.occupied) {
 
 .controls {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
     margin: 0 0 20px 0;
-    padding: 16px;
+    padding: 18px;
     flex-wrap: wrap;
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(10px);
@@ -1405,6 +1405,7 @@ button {
     align-items: center;
     justify-content: center;
     min-width: 120px;
+    flex: 0 1 auto;
 }
 
 button::before {
