@@ -274,36 +274,26 @@ class TicTacToe {
                 throw new Error('Required DOM elements not found');
             }
             
-            // Use event delegation for better performance
-            const gameBoard = document.getElementById('game-board');
-            if (gameBoard) {
-                // Direct click handler on cells for better reliability
-                this.cells.forEach((cell) => {
-                    cell.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handleCellClick({ target: cell });
-                    });
-                });
-                
-                // Also keep delegation as backup
-                gameBoard.addEventListener('click', (e) => {
-                    const cell = e.target.closest('.cell');
-                    if (cell && !cell.hasAttribute('data-handled')) {
-                        cell.setAttribute('data-handled', 'true');
-                        setTimeout(() => cell.removeAttribute('data-handled'), 100);
+            // Use direct event listeners on each cell for maximum reliability
+            this.cells.forEach((cell, index) => {
+                // Click handler
+                cell.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!this.isReplayMode && this.isPlayerTurn && this.gameActive && this.board[index] === '') {
                         this.handleCellClick({ target: cell });
                     }
-                }, true);
-                
-                // Touch support
-                this.cells.forEach((cell) => {
-                    cell.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.handleCellClick({ target: cell });
-                    }, { passive: false });
                 });
-            }
+                
+                // Touch handler
+                cell.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!this.isReplayMode && this.isPlayerTurn && this.gameActive && this.board[index] === '') {
+                        this.handleCellClick({ target: cell });
+                    }
+                }, { passive: false });
+            });
             
             this.cells.forEach((cell, index) => {
                 cell.setAttribute('role', 'gridcell');
