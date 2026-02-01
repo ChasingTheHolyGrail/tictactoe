@@ -23,6 +23,10 @@ The `screenshot_tool.py` script can be used to generate screenshots of the game 
 **Iterative Development Workflow:**
 1. Capture screenshot → 2. Analyse screenshot → 3. Generate feedback → 4. Implement feedback → and so on...
 
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## 📸 Images
 
 ![Tic Tac Toe Game](images/game.png)
@@ -30,7 +34,3 @@ The `screenshot_tool.py` script can be used to generate screenshots of the game 
 ![Achievements](images/achievements.png)
 
 ![Game History](images/history.png)
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
