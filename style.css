@@ -59,7 +59,7 @@ body.dark-mode::before {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
-    padding: 72px 32px 32px 32px;
+    padding: 76px 32px 32px 32px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 2px 8px rgba(0, 0, 0, 0.05),
@@ -85,8 +85,8 @@ body.dark-mode .container {
 
 .header-controls {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 14px;
+    right: 14px;
     display: flex;
     gap: 12px;
     align-items: center;
@@ -492,14 +492,14 @@ body.dark-mode #player-indicator {
 
 .move-info {
     font-size: 0.95em;
-    color: #666;
+    color: #555;
     padding: 12px 18px;
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     font-weight: 600;
     transition: all 0.3s ease;
     line-height: 1.5;
@@ -1485,8 +1485,8 @@ button:disabled {
     background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
-    opacity: 0.6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0.65;
     position: relative;
 }
 
