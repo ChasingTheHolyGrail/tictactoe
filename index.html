@@ -20,26 +20,27 @@
             <input type="range" id="volume-slider" min="0" max="100" value="50" aria-label="Volume">
             <span id="volume-value">50%</span>
         </div>
+        <div class="player-info">
+            <div class="player-label">You: <span class="player-symbol">X</span></div>
+            <div class="player-label computer-with-difficulty">
+                <span>Computer: <span class="computer-symbol">O</span></span>
+                <div class="difficulty-selector">
+                    <select id="difficulty-select" aria-label="Select AI difficulty level">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard" selected>Hard (Unbeatable)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="game-info">
-            <div class="current-player">
-                <span>Current Player: </span>
-                <span id="player-indicator">X (You)</span>
-            </div>
-            <div class="difficulty-selector">
-                <label for="difficulty-select">AI Difficulty: </label>
-                <select id="difficulty-select" aria-label="Select AI difficulty level">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard" selected>Hard (Unbeatable)</option>
-                </select>
-            </div>
             <div class="move-info">
                 <span id="move-counter">Moves: 0</span>
             </div>
             <div class="score">
-                <div>X: <span id="score-x">0</span></div>
-                <div>O: <span id="score-o">0</span></div>
-                <div>Draw: <span id="score-draw">0</span></div>
+                <div>Wins - X: <span id="score-x">0</span></div>
+                <div>Wins - O: <span id="score-o">0</span></div>
+                <div>Draws: <span id="score-draw">0</span></div>
             </div>
         </div>
         <div class="game-board" id="game-board" role="grid" aria-label="Tic Tac Toe game board">
@@ -54,10 +55,9 @@
             <div class="cell" data-index="8"></div>
         </div>
         <div class="controls">
-            <button id="undo-btn" disabled>Undo</button>
-            <button id="reset-btn">New Game</button>
-            <button id="reset-score-btn">Reset Score</button>
-            <button id="history-btn">Game History</button>
+            <button id="reset-btn">🎮 New Game</button>
+            <button id="reset-score-btn">🔄 Reset Score</button>
+            <button id="history-btn">📜 Game History</button>
             <button id="achievements-btn">🏆 Achievements</button>
         </div>
         <div class="replay-controls" id="replay-controls" style="display: none;">
@@ -89,7 +89,6 @@
                 <h3>Keyboard Shortcuts:</h3>
                 <ul>
                     <li><kbd>1-9</kbd>: Quick access to cells</li>
-                    <li><kbd>Ctrl+Z</kbd> / <kbd>Cmd+Z</kbd>: Undo move</li>
                     <li><kbd>R</kbd>: New game</li>
                 </ul>
             </div>

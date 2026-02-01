@@ -266,12 +266,12 @@ class TicTacToe {
     init() {
         try {
             this.cells = document.querySelectorAll('.cell');
-            this.playerIndicator = document.getElementById('player-indicator');
+            // Player indicator removed
             this.message = document.getElementById('message');
             this.resetBtn = document.getElementById('reset-btn');
             this.resetScoreBtn = document.getElementById('reset-score-btn');
             
-            if (!this.cells || !this.playerIndicator || !this.message) {
+            if (!this.cells || !this.message) {
                 throw new Error('Required DOM elements not found');
             }
             
@@ -415,6 +415,9 @@ class TicTacToe {
             this.updateDisplay();
             this.updateScore();
             this.updateMoveCounter();
+            
+            // Randomly decide who starts
+            this.decideStartingPlayer();
         } catch (error) {
             console.error('Initialization error:', error);
             this.message.textContent = 'Error loading game';
@@ -427,11 +430,6 @@ class TicTacToe {
             return;
         }
         
-        // Ctrl+Z or Cmd+Z for undo
-        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-            e.preventDefault();
-            this.undoMove();
-        }
         // R for reset
         else if (e.key === 'r' || e.key === 'R') {
             e.preventDefault();
@@ -891,9 +889,9 @@ class TicTacToe {
             }
         });
         
-        // Update message
+        // Update message - removed "Computer is thinking..." message
         if (this.message) {
-            this.message.textContent = 'Computer is thinking...';
+            this.message.textContent = '';
             this.message.classList.remove('win', 'draw');
         }
     }
@@ -959,9 +957,7 @@ class TicTacToe {
         this.currentGameHistory = null;
         
         this.board = Array(9).fill('');
-        this.currentPlayer = 'X';
         this.gameActive = true;
-        this.isPlayerTurn = true;
         this.winningLine = null;
         this.moveHistory = [];
         this.moveCount = 0;
@@ -982,6 +978,27 @@ class TicTacToe {
         this.updateDisplay();
         this.updateMoveCounter();
         this.updateUndoButton();
+        
+        // Randomly decide who starts
+        this.decideStartingPlayer();
+    }
+    
+    decideStartingPlayer() {
+        // Randomly decide who starts (50% chance each)
+        const computerStarts = Math.random() < 0.5;
+        
+        if (computerStarts) {
+            this.isPlayerTurn = false;
+            this.currentPlayer = 'O';
+            // Computer makes first move
+            setTimeout(() => {
+                this.makeAIMove();
+            }, 500);
+        } else {
+            this.isPlayerTurn = true;
+            this.currentPlayer = 'X';
+        }
+        this.updateDisplay();
     }
     
     undoMove() {
@@ -1091,32 +1108,7 @@ class TicTacToe {
     }
     
     updateDisplay() {
-        if (this.playerIndicator) {
-            if (this.isPlayerTurn && this.gameActive) {
-                this.playerIndicator.textContent = 'X (You)';
-                this.playerIndicator.style.color = '#e74c3c';
-            } else if (!this.isPlayerTurn && this.gameActive) {
-                this.playerIndicator.textContent = 'O (Computer thinking...)';
-                this.playerIndicator.style.color = '#3498db';
-            } else if (!this.gameActive) {
-                // Game ended
-                if (this.winningLine) {
-                    const winner = this.board[this.winningLine[0]];
-                    if (winner === 'X') {
-                        this.playerIndicator.textContent = 'X (You) - Winner!';
-                        this.playerIndicator.style.color = '#2ecc71';
-                    } else {
-                        this.playerIndicator.textContent = 'O (Computer) - Winner!';
-                        this.playerIndicator.style.color = '#e74c3c';
-                    }
-                } else {
-                    this.playerIndicator.textContent = 'Draw';
-                    this.playerIndicator.style.color = '#f39c12';
-                }
-            } else {
-                this.playerIndicator.textContent = this.currentPlayer;
-            }
-        }
+        // Display logic removed - player indicator no longer displayed
     }
     
     updateScore() {
@@ -1248,6 +1240,13 @@ class TicTacToe {
     toggleSounds() {
         this.soundManager.toggleSounds();
         this.updateSoundButton();
+        this.toggleVolumeControl();
+    }
+    
+    toggleVolumeControl() {
+        if (this.volumeControl) {
+            this.volumeControl.classList.toggle('show');
+        }
     }
     
     updateSoundButton() {
