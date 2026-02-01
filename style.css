@@ -113,6 +113,9 @@ body.dark-mode .container {
         0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: visible;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* Tooltip styles */
@@ -415,15 +418,17 @@ body.dark-mode .move-info {
 
 .score {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     font-size: 0.9em;
     align-items: center;
+    justify-content: flex-start;
     margin: 0;
     padding: 0;
+    flex-wrap: wrap;
 }
 
 .score div {
-    padding: 8px 12px;
+    padding: 7px 11px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -438,6 +443,8 @@ body.dark-mode .move-info {
     line-height: 1.4;
     min-width: fit-content;
     text-align: center;
+    margin: 0;
+    flex: 0 0 auto;
 }
 
 .score div::before {
@@ -894,9 +901,11 @@ body.dark-mode .history-item:hover {
 .history-item-header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
-    font-weight: bold;
+    gap: 12px;
+    margin: 0 0 10px 0;
+    padding: 0;
+    font-weight: 600;
+    flex-wrap: wrap;
 }
 
 .history-number {
@@ -946,10 +955,12 @@ body.dark-mode .history-difficulty {
 .history-item-details {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     font-size: 0.9em;
     color: #666;
     flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
 }
 
 body.dark-mode .history-item-details {
@@ -1157,17 +1168,25 @@ body.dark-mode .achievement-item.unlocked {
 
 .achievement-item-content {
     flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .achievement-item-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 1.05em;
+    margin: 0 0 4px 0;
+    padding: 0;
+    line-height: 1.4;
 }
 
 .achievement-item-desc {
-    font-size: 0.9em;
+    font-size: 0.88em;
     color: #666;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
 }
 
 body.dark-mode .achievement-item-desc {
@@ -1479,11 +1498,25 @@ button:disabled:hover::after {
         align-items: stretch;
     }
     
-    .current-player,
-    .difficulty-selector,
-    .move-info {
-        width: 100%;
-    }
+.current-player {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.difficulty-selector {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.move-info {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+}
     
     .difficulty-selector {
         flex-direction: column;
