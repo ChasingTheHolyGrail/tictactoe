@@ -1,3 +1,109 @@
+// Particle System Class
+class ParticleSystem {
+    constructor() {
+        this.particles = [];
+        this.canvas = null;
+        this.ctx = null;
+        this.initCanvas();
+    }
+    
+    initCanvas() {
+        this.canvas = document.createElement('canvas');
+        this.canvas.id = 'particle-canvas';
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.top = '0';
+        this.canvas.style.left = '0';
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.zIndex = '9999';
+        document.body.appendChild(this.canvas);
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    createParticle(x, y, color, type = 'circle') {
+        return {
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 8,
+            vy: (Math.random() - 0.5) * 8 - 2,
+            life: 1.0,
+            decay: 0.02 + Math.random() * 0.02,
+            size: 4 + Math.random() * 6,
+            color: color,
+            type: type,
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.2
+        };
+    }
+    
+    burst(x, y, color, count = 20) {
+        for (let i = 0; i < count; i++) {
+            this.particles.push(this.createParticle(x, y, color));
+        }
+    }
+    
+    confetti(x, y) {
+        const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+        for (let i = 0; i < 50; i++) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const particle = this.createParticle(x, y, color, 'square');
+            particle.size = 8 + Math.random() * 8;
+            this.particles.push(particle);
+        }
+    }
+    
+    update() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2; // Gravity
+            p.life -= p.decay;
+            p.rotation += p.rotationSpeed;
+            
+            if (p.life <= 0 || p.y > this.canvas.height + 50) {
+                this.particles.splice(i, 1);
+                continue;
+            }
+            
+            this.ctx.save();
+            this.ctx.globalAlpha = p.life;
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate(p.rotation);
+            this.ctx.fillStyle = p.color;
+            
+            if (p.type === 'square') {
+                this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            } else {
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+            
+            this.ctx.restore();
+        }
+        
+        if (this.particles.length > 0) {
+            requestAnimationFrame(() => this.update());
+        }
+    }
+    
+    start() {
+        this.update();
+    }
+}
+
 // Sound Manager Class
 class SoundManager {
     constructor() {
@@ -131,6 +237,7 @@ class TicTacToe {
         this.aiPlayer = 'O'; // AI is always O
         this.aiDifficulty = this.loadDifficulty(); // Load AI difficulty level
         this.soundManager = new SoundManager(); // Initialize sound manager
+        this.particleSystem = new ParticleSystem(); // Initialize particle system
         this.gameHistory = this.loadGameHistory(); // Load saved game history
         this.isReplayMode = false;
         this.replayIndex = 0;
@@ -418,6 +525,17 @@ class TicTacToe {
         });
         
         this.board[index] = player;
+        
+        // Particle effect on move
+        const targetCell = cellElement || this.cells[index];
+        if (targetCell && !this.isReplayMode) {
+            const rect = targetCell.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            const color = player === 'X' ? '#e74c3c' : '#3498db';
+            this.particleSystem.burst(x, y, color, 8);
+            this.particleSystem.start();
+        }
         
         // Update UI if cell element provided
         if (cellElement) {
@@ -903,13 +1021,41 @@ class TicTacToe {
     }
     
     celebrateWin() {
-        // Simple celebration effect
+        // Enhanced celebration effect with particles and confetti
         const container = document.querySelector('.container');
         if (container) {
             container.classList.add('celebrate');
             setTimeout(() => {
                 container.classList.remove('celebrate');
             }, 1000);
+        }
+        
+        // Get board center for particle effects
+        const gameBoard = document.getElementById('game-board');
+        if (gameBoard) {
+            const rect = gameBoard.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Confetti burst
+            this.particleSystem.confetti(centerX, centerY);
+            this.particleSystem.start();
+            
+            // Additional particle bursts from winning cells
+            if (this.winningLine) {
+                this.winningLine.forEach((index, i) => {
+                    setTimeout(() => {
+                        const cell = this.cells[index];
+                        if (cell) {
+                            const cellRect = cell.getBoundingClientRect();
+                            const cellX = cellRect.left + cellRect.width / 2;
+                            const cellY = cellRect.top + cellRect.height / 2;
+                            const color = this.board[index] === 'X' ? '#e74c3c' : '#3498db';
+                            this.particleSystem.burst(cellX, cellY, color, 15);
+                        }
+                    }, i * 100);
+                });
+            }
         }
     }
     
