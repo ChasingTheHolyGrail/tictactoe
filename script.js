@@ -216,6 +216,7 @@ class TicTacToe {
             this.replayNextBtn = document.getElementById('replay-next');
             this.replayCloseBtn = document.getElementById('replay-close');
             this.replayInterval = null;
+            this.achievementsBtn = document.getElementById('achievements-btn');
             
             this.resetBtn.addEventListener('click', () => this.resetGame());
             this.resetScoreBtn.addEventListener('click', () => this.resetScore());
@@ -286,6 +287,9 @@ class TicTacToe {
             }
             if (this.replayCloseBtn) {
                 this.replayCloseBtn.addEventListener('click', () => this.closeReplay());
+            }
+            if (this.achievementsBtn) {
+                this.achievementsBtn.addEventListener('click', () => this.showAchievements());
             }
             
             // Keyboard shortcuts
@@ -375,6 +379,11 @@ class TicTacToe {
         // Make player move
         this.makeMove(index, 'X', cell);
         this.soundManager.playMove();
+        
+        // Save move to game history (only if not in replay mode)
+        if (!this.isReplayMode) {
+            this.saveMoveToHistory(index, 'X');
+        }
         
         // Check for game end
         if (!this.checkGameEnd()) {
@@ -466,6 +475,7 @@ class TicTacToe {
                 this.saveStats();
                 this.updateScore();
                 this.finalizeGameHistory(winner);
+                this.checkAchievements(winner === 'X' ? 'win' : 'lose');
                 return true;
             }
         }
@@ -484,6 +494,7 @@ class TicTacToe {
             this.saveStats();
             this.updateScore();
             this.finalizeGameHistory('draw');
+            this.checkAchievements('draw');
             return true;
         }
         
@@ -542,8 +553,10 @@ class TicTacToe {
             this.makeMove(bestMove, this.aiPlayer);
             this.soundManager.playMove();
             
-            // Save move to game history
-            this.saveMoveToHistory(bestMove, this.aiPlayer);
+            // Save move to game history (only if not in replay mode)
+            if (!this.isReplayMode) {
+                this.saveMoveToHistory(bestMove, this.aiPlayer);
+            }
             
             // Check for game end
             if (!this.checkGameEnd()) {
@@ -1223,9 +1236,212 @@ class TicTacToe {
                 }
             }
             
-            this.updateReplayControls();
+        this.updateReplayControls();
+    }
+    
+    loadAchievements() {
+        try {
+            const saved = localStorage.getItem('ticTacToeAchievements');
+            return saved ? JSON.parse(saved) : {
+                firstWin: false,
+                firstDraw: false,
+                winStreak3: false,
+                winStreak5: false,
+                winStreak10: false,
+                perfectGame: false,
+                underdog: false,
+                speedDemon: false,
+                master: false,
+                grandmaster: false
+            };
+        } catch (e) {
+            console.error('Error loading achievements:', e);
+            return {};
         }
     }
+    
+    saveAchievements() {
+        try {
+            localStorage.setItem('ticTacToeAchievements', JSON.stringify(this.achievements));
+        } catch (e) {
+            console.error('Error saving achievements:', e);
+        }
+    }
+    
+    checkAchievements(result) {
+        const newAchievements = [];
+        
+        // First win
+        if (result === 'win' && !this.achievements.firstWin) {
+            this.achievements.firstWin = true;
+            newAchievements.push({ id: 'firstWin', name: 'Erster Sieg', description: 'Gewinne dein erstes Spiel!' });
+        }
+        
+        // First draw
+        if (result === 'draw' && !this.achievements.firstDraw) {
+            this.achievements.firstDraw = true;
+            newAchievements.push({ id: 'firstDraw', name: 'Unentschieden', description: 'Spiele dein erstes Unentschieden!' });
+        }
+        
+        // Win streaks
+        const winStreak = this.calculateWinStreak();
+        if (winStreak >= 3 && !this.achievements.winStreak3) {
+            this.achievements.winStreak3 = true;
+            newAchievements.push({ id: 'winStreak3', name: 'Heißer Lauf', description: 'Gewinne 3 Spiele in Folge!' });
+        }
+        if (winStreak >= 5 && !this.achievements.winStreak5) {
+            this.achievements.winStreak5 = true;
+            newAchievements.push({ id: 'winStreak5', name: 'Unaufhaltsam', description: 'Gewinne 5 Spiele in Folge!' });
+        }
+        if (winStreak >= 10 && !this.achievements.winStreak10) {
+            this.achievements.winStreak10 = true;
+            newAchievements.push({ id: 'winStreak10', name: 'Legende', description: 'Gewinne 10 Spiele in Folge!' });
+        }
+        
+        // Perfect game (win in 5 moves)
+        if (result === 'win' && this.moveCount <= 5 && !this.achievements.perfectGame) {
+            this.achievements.perfectGame = true;
+            newAchievements.push({ id: 'perfectGame', name: 'Perfektes Spiel', description: 'Gewinne in 5 Zügen oder weniger!' });
+        }
+        
+        // Underdog (win against hard AI)
+        if (result === 'win' && this.aiDifficulty === 'hard' && !this.achievements.underdog) {
+            this.achievements.underdog = true;
+            newAchievements.push({ id: 'underdog', name: 'Underdog', description: 'Besiege die KI auf höchster Schwierigkeit!' });
+        }
+        
+        // Speed demon (win in under 30 seconds)
+        if (result === 'win' && this.currentGameHistory && this.currentGameHistory.duration < 30000 && !this.achievements.speedDemon) {
+            this.achievements.speedDemon = true;
+            newAchievements.push({ id: 'speedDemon', name: 'Geschwindigkeitsdämon', description: 'Gewinne in unter 30 Sekunden!' });
+        }
+        
+        // Master (50 wins)
+        if (this.scores.X >= 50 && !this.achievements.master) {
+            this.achievements.master = true;
+            newAchievements.push({ id: 'master', name: 'Meister', description: 'Gewinne 50 Spiele!' });
+        }
+        
+        // Grandmaster (100 wins)
+        if (this.scores.X >= 100 && !this.achievements.grandmaster) {
+            this.achievements.grandmaster = true;
+            newAchievements.push({ id: 'grandmaster', name: 'Großmeister', description: 'Gewinne 100 Spiele!' });
+        }
+        
+        if (newAchievements.length > 0) {
+            this.saveAchievements();
+            this.showAchievementUnlock(newAchievements);
+        }
+    }
+    
+    calculateWinStreak() {
+        let streak = 0;
+        for (let i = 0; i < this.gameHistory.length; i++) {
+            if (this.gameHistory[i].result === 'X') {
+                streak++;
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+    
+    showAchievementUnlock(achievements) {
+        achievements.forEach((achievement, index) => {
+            setTimeout(() => {
+                const notification = document.createElement('div');
+                notification.className = 'achievement-notification';
+                notification.innerHTML = `
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">Erfolg freigeschaltet!</div>
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 4000);
+            }, index * 500);
+        });
+    }
+    
+    showAchievements() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.id = 'achievements-modal';
+        
+        const totalAchievements = Object.keys(this.achievements).length;
+        const unlockedCount = Object.values(this.achievements).filter(a => a === true).length;
+        const progress = Math.round((unlockedCount / totalAchievements) * 100);
+        
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 600px;">
+                <span class="close" id="achievements-close">&times;</span>
+                <h2>🏆 Erfolge</h2>
+                <div class="achievements-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-text">${unlockedCount} / ${totalAchievements} freigeschaltet (${progress}%)</div>
+                </div>
+                <div class="achievements-list" id="achievements-list"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const list = document.getElementById('achievements-list');
+        const achievementData = {
+            firstWin: { name: 'Erster Sieg', description: 'Gewinne dein erstes Spiel!', icon: '🎯' },
+            firstDraw: { name: 'Unentschieden', description: 'Spiele dein erstes Unentschieden!', icon: '🤝' },
+            winStreak3: { name: 'Heißer Lauf', description: 'Gewinne 3 Spiele in Folge!', icon: '🔥' },
+            winStreak5: { name: 'Unaufhaltsam', description: 'Gewinne 5 Spiele in Folge!', icon: '⚡' },
+            winStreak10: { name: 'Legende', description: 'Gewinne 10 Spiele in Folge!', icon: '👑' },
+            perfectGame: { name: 'Perfektes Spiel', description: 'Gewinne in 5 Zügen oder weniger!', icon: '✨' },
+            underdog: { name: 'Underdog', description: 'Besiege die KI auf höchster Schwierigkeit!', icon: '💪' },
+            speedDemon: { name: 'Geschwindigkeitsdämon', description: 'Gewinne in unter 30 Sekunden!', icon: '⚡' },
+            master: { name: 'Meister', description: 'Gewinne 50 Spiele!', icon: '🎖️' },
+            grandmaster: { name: 'Großmeister', description: 'Gewinne 100 Spiele!', icon: '👑' }
+        };
+        
+        Object.entries(achievementData).forEach(([key, data]) => {
+            const unlocked = this.achievements[key];
+            const item = document.createElement('div');
+            item.className = `achievement-item ${unlocked ? 'unlocked' : 'locked'}`;
+            item.innerHTML = `
+                <div class="achievement-item-icon">${unlocked ? data.icon : '🔒'}</div>
+                <div class="achievement-item-content">
+                    <div class="achievement-item-name">${data.name}</div>
+                    <div class="achievement-item-desc">${data.description}</div>
+                </div>
+                ${unlocked ? '<div class="achievement-check">✓</div>' : ''}
+            `;
+            list.appendChild(item);
+        });
+        
+        document.getElementById('achievements-close').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+        
+        modal.style.display = 'block';
+    }
+}
     
     replayPreviousMove() {
         if (!this.isReplayMode || !this.replayGame || this.replayIndex === 0) return;
