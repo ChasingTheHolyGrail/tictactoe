@@ -418,6 +418,9 @@ class TicTacToe {
             // Apply saved theme
             this.applyTheme();
             
+            // Ensure board is enabled at start
+            this.enableBoard();
+            
             this.updateDisplay();
             this.updateScore();
             this.updateMoveCounter();
@@ -465,22 +468,16 @@ class TicTacToe {
     }
     
     handleCellClick(e) {
-        console.log('handleCellClick called', e.target); // Debug
-        
         // Prevent clicks during replay mode
         if (this.isReplayMode) {
-            console.log('Blocked: replay mode');
             return;
         }
         
         // Get the cell element
         const cell = e.target;
         if (!cell || !cell.classList || !cell.classList.contains('cell')) {
-            console.log('Blocked: not a cell', cell);
             return;
         }
-        
-        console.log('Processing click on cell', cell.getAttribute('data-index'));
         
         // Only allow player (X) to make moves
         if (!this.isPlayerTurn || this.currentPlayer !== 'X') {
