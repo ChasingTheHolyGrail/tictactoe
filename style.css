@@ -193,12 +193,14 @@ body.dark-mode .sound-toggle {
 .volume-control {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 10px 0;
-    padding: 10px;
+    gap: 12px;
+    margin: 0 0 20px 0;
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.9em;
+    width: 100%;
+    max-width: 100%;
 }
 
 body.dark-mode .volume-control {
@@ -207,7 +209,10 @@ body.dark-mode .volume-control {
 
 .volume-control label {
     font-weight: 500;
-    min-width: 80px;
+    min-width: 75px;
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
 }
 
 .volume-control input[type="range"] {
@@ -248,9 +253,12 @@ body.dark-mode .volume-control input[type="range"]::-moz-range-thumb {
 }
 
 #volume-value {
-    min-width: 45px;
+    min-width: 42px;
     text-align: right;
-    font-weight: bold;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
 }
 
 h1 {
@@ -830,8 +838,8 @@ body.dark-mode .replay-controls {
 }
 
 .history-item {
-    padding: 18px;
-    margin-bottom: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -1081,9 +1089,9 @@ body.dark-mode .progress-text {
 .achievement-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 18px;
-    margin-bottom: 12px;
+    gap: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -1225,8 +1233,8 @@ button, .cell, select {
 }
 
 button {
-    padding: 14px 28px;
-    font-size: 1em;
+    padding: 12px 24px;
+    font-size: 0.95em;
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -1239,7 +1247,12 @@ button {
         0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
+    line-height: 1.4;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button::before {
@@ -1669,7 +1682,7 @@ button:disabled:hover::after {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     margin: 5% auto;
-    padding: 35px;
+    padding: 32px;
     border-radius: 24px;
     max-width: 600px;
     width: 90%;
