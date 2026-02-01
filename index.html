@@ -28,7 +28,7 @@
                 <div>Unentschieden: <span id="score-draw">0</span></div>
             </div>
         </div>
-        <div class="game-board" id="game-board">
+        <div class="game-board" id="game-board" role="grid" aria-label="Tic Tac Toe Spielfeld">
             <div class="cell" data-index="0"></div>
             <div class="cell" data-index="1"></div>
             <div class="cell" data-index="2"></div>
@@ -44,7 +44,7 @@
             <button id="reset-btn">Neues Spiel</button>
             <button id="reset-score-btn">Punkte zurücksetzen</button>
         </div>
-        <div class="message" id="message"></div>
+        <div class="message" id="message" role="status" aria-live="polite" aria-atomic="true"></div>
     </div>
     
     <!-- Help Modal -->
@@ -58,8 +58,9 @@
                 <p>Als erster drei eigene Symbole in einer Reihe (horizontal, vertikal oder diagonal) platzieren.</p>
                 <h3>Spielablauf:</h3>
                 <ul>
-                    <li>Spieler X beginnt</li>
-                    <li>Wechseln Sie sich ab, um Ihre Symbole zu platzieren</li>
+                    <li>Du spielst als X gegen den Computer (O)</li>
+                    <li>Du beginnst und machst den ersten Zug</li>
+                    <li>Nach deinem Zug macht der Computer automatisch seinen Zug</li>
                     <li>Gewinner ist, wer zuerst drei in einer Reihe hat</li>
                     <li>Bei einem vollen Spielfeld ohne Gewinner: Unentschieden</li>
                 </ul>

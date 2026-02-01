@@ -59,11 +59,12 @@ class TicTacToe {
             }
             
             this.cells.forEach((cell, index) => {
-                cell.setAttribute('role', 'button');
+                cell.setAttribute('role', 'gridcell');
                 cell.setAttribute('aria-label', `Zelle ${index + 1}, leer`);
-                cell.setAttribute('tabindex', '0');
+                cell.setAttribute('tabindex', this.isPlayerTurn ? '0' : '-1');
+                cell.setAttribute('aria-disabled', 'false');
                 cell.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if ((e.key === 'Enter' || e.key === ' ') && this.isPlayerTurn) {
                         e.preventDefault();
                         this.handleCellClick(e);
                     }
@@ -223,7 +224,10 @@ class TicTacToe {
         if (cellElement) {
             cellElement.textContent = player;
             cellElement.classList.add('occupied', player.toLowerCase());
-            cellElement.setAttribute('aria-label', `Zelle ${index + 1}, ${player}`);
+            const playerName = player === 'X' ? 'Du' : 'Computer';
+            cellElement.setAttribute('aria-label', `Zelle ${index + 1}, ${player} von ${playerName}`);
+            cellElement.setAttribute('tabindex', '-1');
+            cellElement.setAttribute('aria-disabled', 'true');
             cellElement.classList.add('animate-mark');
         } else {
             // Update UI for AI moves
@@ -231,7 +235,9 @@ class TicTacToe {
             if (cell) {
                 cell.textContent = player;
                 cell.classList.add('occupied', player.toLowerCase());
-                cell.setAttribute('aria-label', `Zelle ${index + 1}, ${player}`);
+                cell.setAttribute('aria-label', `Zelle ${index + 1}, ${player} von Computer`);
+                cell.setAttribute('tabindex', '-1');
+                cell.setAttribute('aria-disabled', 'true');
                 cell.classList.add('animate-mark');
             }
         }
@@ -383,6 +389,8 @@ class TicTacToe {
                     let score = this.minimax(board, depth + 1, false);
                     board[i] = '';
                     bestScore = Math.max(score, bestScore);
+                    // Alpha-beta pruning optimization (though minimal impact on 3x3)
+                    if (bestScore >= 10) break;
                 }
             }
             return bestScore;
@@ -394,6 +402,8 @@ class TicTacToe {
                     let score = this.minimax(board, depth + 1, true);
                     board[i] = '';
                     bestScore = Math.min(score, bestScore);
+                    // Alpha-beta pruning optimization
+                    if (bestScore <= -10) break;
                 }
             }
             return bestScore;
@@ -421,9 +431,12 @@ class TicTacToe {
         const gameBoard = document.getElementById('game-board');
         if (gameBoard) {
             gameBoard.classList.add('ai-thinking');
+            gameBoard.setAttribute('aria-busy', 'true');
         }
         this.cells.forEach(cell => {
             cell.style.pointerEvents = 'none';
+            cell.setAttribute('tabindex', '-1');
+            cell.setAttribute('aria-disabled', 'true');
             if (cell.textContent === '') {
                 cell.style.opacity = '0.4';
             } else {
@@ -443,13 +456,18 @@ class TicTacToe {
         const gameBoard = document.getElementById('game-board');
         if (gameBoard) {
             gameBoard.classList.remove('ai-thinking');
+            gameBoard.setAttribute('aria-busy', 'false');
         }
-        this.cells.forEach(cell => {
+        this.cells.forEach((cell, index) => {
             if (cell.textContent === '') {
                 cell.style.pointerEvents = 'auto';
                 cell.style.opacity = '1';
+                cell.setAttribute('tabindex', this.isPlayerTurn ? '0' : '-1');
+                cell.setAttribute('aria-disabled', 'false');
             } else {
                 cell.style.opacity = '1';
+                cell.setAttribute('tabindex', '-1');
+                cell.setAttribute('aria-disabled', 'true');
             }
         });
         
@@ -501,6 +519,8 @@ class TicTacToe {
             cell.textContent = '';
             cell.classList.remove('occupied', 'x', 'o', 'winning-cell', 'animate-mark');
             cell.setAttribute('aria-label', `Zelle ${index + 1}, leer`);
+            cell.setAttribute('tabindex', '0');
+            cell.setAttribute('aria-disabled', 'false');
             cell.style.pointerEvents = 'auto';
             cell.style.opacity = '1';
         });
