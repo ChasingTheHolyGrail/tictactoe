@@ -105,6 +105,50 @@ body.dark-mode .game-info {
     font-weight: bold;
 }
 
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95em;
+}
+
+.difficulty-selector label {
+    font-weight: 500;
+}
+
+.difficulty-selector select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #333;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.difficulty-selector select:hover {
+    border-color: #5568d3;
+    transform: translateY(-1px);
+}
+
+.difficulty-selector select:focus {
+    outline: none;
+    border-color: #5568d3;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+body.dark-mode .difficulty-selector select {
+    background: #34495e;
+    color: #ecf0f1;
+    border-color: #3498db;
+}
+
+body.dark-mode .difficulty-selector select:hover {
+    border-color: #2980b9;
+}
+
 #player-indicator {
     color: #667eea;
     font-size: 1.3em;

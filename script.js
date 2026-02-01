@@ -8,6 +8,7 @@ class TicTacToe {
         this.moveCount = 0;
         this.isPlayerTurn = true; // Track if it's player's turn
         this.aiPlayer = 'O'; // AI is always O
+        this.aiDifficulty = this.loadDifficulty(); // Load AI difficulty level
         
         // Load scores from localStorage or initialize
         this.scores = this.loadScores();
@@ -345,7 +346,76 @@ class TicTacToe {
             return -1; // No moves available
         }
         
-        // Use minimax algorithm to find best move
+        // Different AI strategies based on difficulty
+        switch (this.aiDifficulty) {
+            case 'easy':
+                return this.getEasyMove(availableMoves);
+            case 'medium':
+                return this.getMediumMove(availableMoves);
+            case 'hard':
+            default:
+                return this.getHardMove(availableMoves);
+        }
+    }
+    
+    getEasyMove(availableMoves) {
+        // Easy: Random moves with occasional smart moves (30% chance of best move)
+        if (Math.random() < 0.3) {
+            // Sometimes make a good move
+            return this.getMediumMove(availableMoves);
+        }
+        // Most of the time, make a random move
+        return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+    
+    getMediumMove(availableMoves) {
+        // Medium: Try to win or block, otherwise make strategic moves
+        
+        // 1. Check if AI can win in one move
+        for (const move of availableMoves) {
+            this.board[move] = this.aiPlayer;
+            if (this.evaluateBoard(this.board) === this.aiPlayer) {
+                this.board[move] = '';
+                return move;
+            }
+            this.board[move] = '';
+        }
+        
+        // 2. Check if player can win next move - block it
+        for (const move of availableMoves) {
+            this.board[move] = 'X';
+            if (this.evaluateBoard(this.board) === 'X') {
+                this.board[move] = '';
+                return move;
+            }
+            this.board[move] = '';
+        }
+        
+        // 3. Take center if available
+        if (availableMoves.includes(4)) {
+            return 4;
+        }
+        
+        // 4. Take a corner if available
+        const corners = [0, 2, 6, 8];
+        const availableCorners = corners.filter(c => availableMoves.includes(c));
+        if (availableCorners.length > 0) {
+            return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+        }
+        
+        // 5. Take any edge
+        const edges = [1, 3, 5, 7];
+        const availableEdges = edges.filter(e => availableMoves.includes(e));
+        if (availableEdges.length > 0) {
+            return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+        }
+        
+        // Fallback: random move
+        return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+    
+    getHardMove(availableMoves) {
+        // Hard: Use minimax algorithm (unbeatable)
         let bestScore = -Infinity;
         let bestMove = -1;
         
@@ -707,6 +777,24 @@ class TicTacToe {
             localStorage.setItem('ticTacToeTheme', this.darkMode ? 'dark' : 'light');
         } catch (error) {
             console.error('Error saving theme:', error);
+        }
+    }
+    
+    loadDifficulty() {
+        try {
+            const saved = localStorage.getItem('ticTacToeDifficulty');
+            return saved || 'hard'; // Default to hard
+        } catch (error) {
+            console.error('Error loading difficulty:', error);
+            return 'hard';
+        }
+    }
+    
+    saveDifficulty() {
+        try {
+            localStorage.setItem('ticTacToeDifficulty', this.aiDifficulty);
+        } catch (error) {
+            console.error('Error saving difficulty:', error);
         }
     }
     
