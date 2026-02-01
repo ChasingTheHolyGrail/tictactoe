@@ -240,10 +240,12 @@ body.dark-mode .volume-control:hover {
 
 .volume-control label {
     font-weight: 500;
-    min-width: 75px;
+    min-width: 80px;
     margin: 0;
     padding: 0;
-    line-height: 1.4;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
 }
 
 .volume-control input[type="range"] {
@@ -359,9 +361,9 @@ body.dark-mode .game-info {
 .current-player {
     font-size: 1.05em;
     font-weight: 600;
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
-    padding: 10px 16px;
+    padding: 12px 18px;
     letter-spacing: 0.2px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -383,7 +385,7 @@ body.dark-mode .current-player {
     gap: 12px;
     font-size: 0.95em;
     margin: 0;
-    padding: 10px 16px;
+    padding: 12px 18px;
     line-height: 1.5;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -461,7 +463,7 @@ body.dark-mode #player-indicator {
 .move-info {
     font-size: 0.95em;
     color: #666;
-    padding: 10px 16px;
+    padding: 12px 18px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -1548,12 +1550,18 @@ button:disabled:hover::after {
     line-height: 1.6;
     letter-spacing: 0.3px;
     transition: all 0.3s ease;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
 }
 
 .message:not(:empty) {
     min-height: 52px;
     padding: 14px 20px;
     margin-top: 8px;
+    opacity: 1;
+    max-height: 200px;
+    overflow: visible;
 }
 
 @keyframes slideInMessage {
