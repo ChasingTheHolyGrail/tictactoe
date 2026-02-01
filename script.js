@@ -424,8 +424,18 @@ class TicTacToe {
         }
         this.cells.forEach(cell => {
             cell.style.pointerEvents = 'none';
-            cell.style.opacity = '0.6';
+            if (cell.textContent === '') {
+                cell.style.opacity = '0.4';
+            } else {
+                cell.style.opacity = '0.7';
+            }
         });
+        
+        // Update message
+        if (this.message) {
+            this.message.textContent = 'Computer ist am Zug...';
+            this.message.classList.remove('win', 'draw');
+        }
     }
     
     enableBoard() {
@@ -438,8 +448,15 @@ class TicTacToe {
             if (cell.textContent === '') {
                 cell.style.pointerEvents = 'auto';
                 cell.style.opacity = '1';
+            } else {
+                cell.style.opacity = '1';
             }
         });
+        
+        // Clear thinking message if game is still active
+        if (this.message && this.gameActive && !this.message.classList.contains('win') && !this.message.classList.contains('draw')) {
+            this.message.textContent = '';
+        }
     }
     
     checkWinner() {
@@ -576,8 +593,25 @@ class TicTacToe {
         if (this.playerIndicator) {
             if (this.isPlayerTurn && this.gameActive) {
                 this.playerIndicator.textContent = 'X (Du)';
+                this.playerIndicator.style.color = '#e74c3c';
             } else if (!this.isPlayerTurn && this.gameActive) {
                 this.playerIndicator.textContent = 'O (Computer denkt...)';
+                this.playerIndicator.style.color = '#3498db';
+            } else if (!this.gameActive) {
+                // Game ended
+                if (this.winningLine) {
+                    const winner = this.board[this.winningLine[0]];
+                    if (winner === 'X') {
+                        this.playerIndicator.textContent = 'X (Du) - Gewinner!';
+                        this.playerIndicator.style.color = '#2ecc71';
+                    } else {
+                        this.playerIndicator.textContent = 'O (Computer) - Gewinner!';
+                        this.playerIndicator.style.color = '#e74c3c';
+                    }
+                } else {
+                    this.playerIndicator.textContent = 'Unentschieden';
+                    this.playerIndicator.style.color = '#f39c12';
+                }
             } else {
                 this.playerIndicator.textContent = this.currentPlayer;
             }
