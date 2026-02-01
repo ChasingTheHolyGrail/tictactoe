@@ -1,3 +1,124 @@
+// Sound Manager Class
+class SoundManager {
+    constructor() {
+        this.soundsEnabled = this.loadSoundSettings();
+        this.volume = this.loadVolume();
+        this.audioContext = null;
+        this.initAudioContext();
+    }
+    
+    initAudioContext() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.warn('Web Audio API not supported');
+        }
+    }
+    
+    playTone(frequency, duration, type = 'sine') {
+        if (!this.soundsEnabled || !this.audioContext) return;
+        
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(this.volume, this.audioContext.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+    
+    playMove() {
+        this.playTone(440, 0.1, 'sine');
+    }
+    
+    playWin() {
+        // Victory fanfare
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                this.playTone(freq, 0.2, 'sine');
+            }, i * 100);
+        });
+    }
+    
+    playLose() {
+        // Sad sound
+        const notes = [392, 349.23, 311.13]; // G, F, Eb descending
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                this.playTone(freq, 0.3, 'sine');
+            }, i * 150);
+        });
+    }
+    
+    playDraw() {
+        this.playTone(330, 0.3, 'sine');
+    }
+    
+    playError() {
+        this.playTone(200, 0.15, 'square');
+    }
+    
+    playClick() {
+        this.playTone(800, 0.05, 'sine');
+    }
+    
+    toggleSounds() {
+        this.soundsEnabled = !this.soundsEnabled;
+        this.saveSoundSettings();
+        if (this.soundsEnabled) {
+            this.playClick();
+        }
+    }
+    
+    setVolume(vol) {
+        this.volume = Math.max(0, Math.min(1, vol));
+        this.saveVolume();
+    }
+    
+    loadSoundSettings() {
+        try {
+            const saved = localStorage.getItem('ticTacToeSounds');
+            return saved !== 'false';
+        } catch (e) {
+            return true;
+        }
+    }
+    
+    saveSoundSettings() {
+        try {
+            localStorage.setItem('ticTacToeSounds', this.soundsEnabled);
+        } catch (e) {
+            console.error('Error saving sound settings:', e);
+        }
+    }
+    
+    loadVolume() {
+        try {
+            const saved = localStorage.getItem('ticTacToeVolume');
+            return saved ? parseFloat(saved) : 0.5;
+        } catch (e) {
+            return 0.5;
+        }
+    }
+    
+    saveVolume() {
+        try {
+            localStorage.setItem('ticTacToeVolume', this.volume);
+        } catch (e) {
+            console.error('Error saving volume:', e);
+        }
+    }
+}
+
 class TicTacToe {
     constructor() {
         this.board = Array(9).fill('');
@@ -9,6 +130,7 @@ class TicTacToe {
         this.isPlayerTurn = true; // Track if it's player's turn
         this.aiPlayer = 'O'; // AI is always O
         this.aiDifficulty = this.loadDifficulty(); // Load AI difficulty level
+        this.soundManager = new SoundManager(); // Initialize sound manager
         
         // Load scores from localStorage or initialize
         this.scores = this.loadScores();
@@ -75,17 +197,56 @@ class TicTacToe {
             this.undoBtn = document.getElementById('undo-btn');
             this.moveCounter = document.getElementById('move-counter');
             this.themeToggle = document.getElementById('theme-toggle');
+            this.soundToggle = document.getElementById('sound-toggle');
+            this.volumeSlider = document.getElementById('volume-slider');
+            this.volumeValue = document.getElementById('volume-value');
+            this.volumeControl = document.getElementById('volume-control');
             this.helpBtn = document.getElementById('help-btn');
             this.helpModal = document.getElementById('help-modal');
             this.closeModal = document.querySelector('.close');
+            this.difficultySelect = document.getElementById('difficulty-select');
             
             this.resetBtn.addEventListener('click', () => this.resetGame());
             this.resetScoreBtn.addEventListener('click', () => this.resetScore());
             if (this.undoBtn) {
                 this.undoBtn.addEventListener('click', () => this.undoMove());
             }
+            if (this.difficultySelect) {
+                this.difficultySelect.value = this.aiDifficulty;
+                this.difficultySelect.addEventListener('change', (e) => {
+                    if (!this.gameActive || this.moveCount === 0) {
+                        this.aiDifficulty = e.target.value;
+                        this.saveDifficulty();
+                    } else {
+                        // Revert selection if game is in progress
+                        e.target.value = this.aiDifficulty;
+                        this.message.textContent = 'Schwierigkeit kann nur vor Spielbeginn geändert werden!';
+                        setTimeout(() => {
+                            if (this.message) this.message.textContent = '';
+                        }, 2000);
+                    }
+                });
+            }
             if (this.themeToggle) {
                 this.themeToggle.addEventListener('click', () => this.toggleTheme());
+            }
+            if (this.soundToggle) {
+                this.soundToggle.addEventListener('click', () => this.toggleSounds());
+                this.updateSoundButton();
+            }
+            if (this.volumeSlider) {
+                this.volumeSlider.value = this.soundManager.volume * 100;
+                if (this.volumeValue) {
+                    this.volumeValue.textContent = Math.round(this.soundManager.volume * 100) + '%';
+                }
+                this.volumeSlider.addEventListener('input', (e) => {
+                    const vol = e.target.value / 100;
+                    this.soundManager.setVolume(vol);
+                    if (this.volumeValue) {
+                        this.volumeValue.textContent = e.target.value + '%';
+                    }
+                    this.soundManager.playClick();
+                });
             }
             if (this.helpBtn) {
                 this.helpBtn.addEventListener('click', () => this.showHelp());
@@ -178,6 +339,7 @@ class TicTacToe {
         if (this.board[index] !== '' || !this.gameActive) {
             // Visual feedback for invalid move
             cell.classList.add('invalid-move');
+            this.soundManager.playError();
             setTimeout(() => {
                 cell.classList.remove('invalid-move');
             }, 300);
@@ -186,6 +348,7 @@ class TicTacToe {
         
         // Make player move
         this.makeMove(index, 'X', cell);
+        this.soundManager.playMove();
         
         // Check for game end
         if (!this.checkGameEnd()) {
@@ -263,8 +426,10 @@ class TicTacToe {
                 this.celebrateWin();
                 if (winner === 'X') {
                     this.message.textContent = 'Du hast gewonnen!';
+                    this.soundManager.playWin();
                 } else {
                     this.message.textContent = 'Der Computer hat gewonnen!';
+                    this.soundManager.playLose();
                 }
                 this.message.classList.add('win');
                 this.scores[winner] = (this.scores[winner] || 0) + 1;
@@ -284,6 +449,7 @@ class TicTacToe {
             this.isPlayerTurn = false;
             this.message.textContent = 'Unentschieden!';
             this.message.classList.add('draw');
+            this.soundManager.playDraw();
             this.scores.draw = (this.scores.draw || 0) + 1;
             this.stats.gamesPlayed = (this.stats.gamesPlayed || 0) + 1;
             this.stats.draws = (this.stats.draws || 0) + 1;
@@ -311,6 +477,7 @@ class TicTacToe {
         const bestMove = this.getBestMove();
         if (bestMove !== -1 && bestMove >= 0 && bestMove < 9 && this.board[bestMove] === '') {
             this.makeMove(bestMove, this.aiPlayer);
+            this.soundManager.playMove();
             
             // Check for game end
             if (!this.checkGameEnd()) {
@@ -831,6 +998,17 @@ class TicTacToe {
         if (this.helpModal) {
             this.helpModal.style.display = 'none';
             document.body.style.overflow = '';
+        }
+    }
+    
+    toggleSounds() {
+        this.soundManager.toggleSounds();
+        this.updateSoundButton();
+    }
+    
+    updateSoundButton() {
+        if (this.soundToggle) {
+            this.soundToggle.textContent = this.soundManager.soundsEnabled ? '🔊' : '🔇';
         }
     }
 }

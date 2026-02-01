@@ -10,8 +10,14 @@
 <body>
     <div class="container">
         <div class="header-controls">
+            <button id="sound-toggle" class="sound-toggle" aria-label="Sound ein/aus">🔊</button>
             <button id="theme-toggle" class="theme-toggle" aria-label="Theme wechseln">🌙</button>
             <button id="help-btn" class="help-btn" aria-label="Hilfe">?</button>
+        </div>
+        <div class="volume-control" id="volume-control">
+            <label for="volume-slider">Lautstärke:</label>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" aria-label="Lautstärke">
+            <span id="volume-value">50%</span>
         </div>
         <h1>Tic Tac Toe</h1>
         <div class="game-info">

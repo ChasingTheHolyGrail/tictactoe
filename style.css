@@ -44,7 +44,8 @@ body.dark-mode .container {
 }
 
 .theme-toggle,
-.help-btn {
+.help-btn,
+.sound-toggle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -61,14 +62,79 @@ body.dark-mode .container {
 }
 
 .theme-toggle:hover,
-.help-btn:hover {
+.help-btn:hover,
+.sound-toggle:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .theme-toggle,
-body.dark-mode .help-btn {
+body.dark-mode .help-btn,
+body.dark-mode .sound-toggle {
     background: #34495e;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+body.dark-mode .volume-control {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.volume-control label {
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.volume-control input[type="range"] {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+}
+
+.volume-control input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+}
+
+body.dark-mode .volume-control input[type="range"] {
+    background: #555;
+}
+
+body.dark-mode .volume-control input[type="range"]::-webkit-slider-thumb,
+body.dark-mode .volume-control input[type="range"]::-moz-range-thumb {
+    background: #3498db;
+}
+
+#volume-value {
+    min-width: 45px;
+    text-align: right;
+    font-weight: bold;
 }
 
 h1 {
