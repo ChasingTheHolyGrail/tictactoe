@@ -1600,7 +1600,6 @@ class TicTacToe {
         
         modal.style.display = 'block';
     }
-}
     
     replayPreviousMove() {
         if (!this.isReplayMode || !this.replayGame || this.replayIndex === 0) return;
