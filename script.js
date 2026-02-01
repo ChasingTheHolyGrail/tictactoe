@@ -1393,7 +1393,8 @@ class TicTacToe {
                     this.highlightWinningLine();
                 }
             }
-            
+        }
+        
         this.updateReplayControls();
     }
     
