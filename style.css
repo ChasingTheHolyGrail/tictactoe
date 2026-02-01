@@ -1144,7 +1144,7 @@ body.dark-mode .history-item-details {
 
 .achievement-notification {
     position: fixed;
-    top: 20px;
+    top: 80px;
     right: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -1447,11 +1447,14 @@ button::before {
     background: rgba(255, 255, 255, 0.3);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
 }
 
 button:hover::before {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
 }
 
 button:hover:not(:disabled) {
@@ -1492,19 +1495,22 @@ button:disabled:hover {
 button:disabled::after {
     content: 'Nicht verfügbar';
     position: absolute;
-    bottom: -35px;
+    bottom: -38px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
     font-size: 0.7em;
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     z-index: 1000;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 button:disabled:hover::after {
